@@ -782,3 +782,166 @@ footer {
         padding: 22px;
     }
 }
+
+/* StudySync AI - Study Room Chat */
+
+.chat-page {
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+.chat-content {
+    width: min(900px, 92%);
+    margin: 0 auto;
+    padding: 48px 0 64px;
+}
+
+.chat-heading {
+    margin-bottom: 28px;
+}
+
+.chat-heading h1 {
+    margin-bottom: 10px;
+    color: #172554;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.chat-heading p,
+.chat-card-heading p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.chat-card {
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.chat-card-heading {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.chat-card-heading h2 {
+    margin-bottom: 8px;
+    color: #172554;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 220px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 22px 0;
+}
+
+.chat-empty {
+    margin: auto;
+    padding: 35px 10px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.chat-message {
+    padding: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow-wrap: anywhere;
+}
+
+.chat-message-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.chat-message-header strong {
+    color: #4338ca;
+}
+
+.chat-message-header time {
+    color: #94a3b8;
+    font-size: 0.78rem;
+}
+
+.chat-message-content {
+    margin: 0;
+    color: #334155;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.chat-form {
+    padding-top: 22px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.chat-form .form-group {
+    margin-bottom: 18px;
+}
+
+.chat-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-weight: 600;
+}
+
+.chat-form input,
+.chat-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.chat-form textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.chat-form input:focus,
+.chat-form textarea:focus {
+    outline: 2px solid #c7d2fe;
+    border-color: #6366f1;
+}
+
+.chat-form .auth-button {
+    cursor: pointer;
+}
+
+#chat-status {
+    min-height: 20px;
+    margin: 12px 0 0;
+    color: #166534;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .chat-content {
+        padding: 30px 0 40px;
+    }
+
+    .chat-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .chat-message-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Room Chat | StudySync AI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <main class="chat-page">
+        <header class="dashboard-header">
+            <a href="../index.html" class="dashboard-logo">StudySync AI</a>
+
+            <nav class="dashboard-nav">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="rooms.html">Study Rooms</a>
+                <a href="notes.html">Study Notes</a>
+            </nav>
+        </header>
+
+        <section class="chat-content">
+            <div class="chat-heading">
+                <h1>Study Room Chat</h1>
+                <p>Share questions and ideas with your study group.</p>
+            </div>
+
+            <section class="chat-card">
+                <div class="chat-card-heading">
+                    <h2>Group Discussion</h2>
+                    <p>Connect with your fellow learners.</p>
+                </div>
+
+                <div id="chat-messages"
+                     class="chat-messages"
+                     aria-live="polite">
+                </div>
+
+                <form id="chat-form" class="chat-form">
+                    <div class="form-group">
+                        <label for="chat-name">Your Name</label>
+                        <input
+                            type="text"
+                            id="chat-name"
+                            placeholder="Enter your name"
+                            maxlength="40"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chat-input">Message</label>
+                        <textarea
+                            id="chat-input"
+                            rows="3"
+                            maxlength="1000"
+                            placeholder="Type your message..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="auth-button">
+                        Send Message
+                    </button>
+
+                    <p id="chat-status"
+                       role="status"
+                       aria-live="polite"></p>
+                </form>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const chatForm = document.getElementById("chat-form");
+        const nameInput = document.getElementById("chat-name");
+        const messageInput = document.getElementById("chat-input");
+        const messagesContainer = document.getElementById("chat-messages");
+        const statusMessage = document.getElementById("chat-status");
+
+        const STORAGE_KEY = "studysyncChatMessages";
+
+        // Retrieve saved messages safely
+        function getMessages() {
+            try {
+                const messages = JSON.parse(
+                    localStorage.getItem(STORAGE_KEY) || "[]"
+                );
+
+                return Array.isArray(messages) ? messages : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        // Display messages on the page
+        function displayMessages() {
+            const messages = getMessages();
+            messagesContainer.replaceChildren();
+
+            if (messages.length === 0) {
+                const emptyMessage = document.createElement("p");
+                emptyMessage.className = "chat-empty";
+                emptyMessage.textContent =
+                    "No messages yet. Start the conversation!";
+
+                messagesContainer.appendChild(emptyMessage);
+                return;
+            }
+
+            messages.forEach(function (message) {
+                const card = document.createElement("article");
+                card.className = "chat-message";
+
+                const header = document.createElement("div");
+                header.className = "chat-message-header";
+
+                const sender = document.createElement("strong");
+                sender.textContent = message.name;
+
+                const timestamp = document.createElement("time");
+                timestamp.textContent = message.time;
+
+                header.append(sender, timestamp);
+
+                const text = document.createElement("p");
+                text.className = "chat-message-content";
+                text.textContent = message.text;
+
+                card.append(header, text);
+                messagesContainer.appendChild(card);
+            });
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Send a new message
+        chatForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const name = nameInput.value.trim();
+            const messageText = messageInput.value.trim();
+
+            if (name === "" || messageText === "") {
+                statusMessage.textContent =
+                    "Please enter your name and message.";
+                return;
+            }
+
+            const messages = getMessages();
+
+            messages.push({
+                name: name,
+                text: messageText,
+                time: new Date().toLocaleString()
+            });
+
+            try {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(messages)
+                );
+            } catch (error) {
+                statusMessage.textContent =
+                    "Unable to save the message in this browser.";
+                return;
+            }
+
+            displayMessages();
+            messageInput.value = "";
+            statusMessage.textContent = "Message sent successfully!";
+            messageInput.focus();
+        });
+
+        // Load saved messages when the page opens
+        displayMessages();
+    </script>
+</body>
+</html>
