@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Rooms | StudySync AI</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <main class="rooms-page">
+
+        <header class="dashboard-header">
+            <a href="../index.html" class="dashboard-logo">
+                StudySync AI
+            </a>
+
+            <nav class="dashboard-nav">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="../index.html">Home</a>
+            </nav>
+        </header>
+
+        <section class="rooms-content">
+
+            <div class="rooms-heading">
+                <h1>Your Study Rooms</h1>
+                <p>Create a room for your group or join one with a room code.</p>
+            </div>
+
+            <div class="rooms-grid">
+
+                <section class="room-card">
+                    <h2>Create a Study Room</h2>
+                    <p>Start a new collaborative space for your study group.</p>
+
+                    <form class="room-form">
+                        <div class="form-group">
+                            <label for="room-name">Room Name</label>
+                            <input
+                                type="text"
+                                id="room-name"
+                                name="room-name"
+                                placeholder="e.g. Data Structures Study Group"
+                                required >
+                    
+                        </div>
+
+                        <button type="submit" class="auth-button">
+                            Create Room
+                        </button>
+                    </form>
+                </section>
+
+                <section class="room-card">
+                    <h2>Join a Study Room</h2>
+                    <p>Enter the room code shared by your study group.</p>
+
+                    <form class="room-form">
+                        <div class="form-group">
+                            <label for="room-code">Room Code</label>
+                            <input
+                                type="text"
+                                id="room-code"
+                                name="room-code"
+                                placeholder="Enter room code"
+                                required
+                            >
+                        </div>
+
+                        <button type="submit" class="auth-button">
+                            Join Room
+                        </button>
+                    </form>
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+    
+<script>
+    const roomForms = document.querySelectorAll(".room-form");
+
+    const createForm = roomForms[0];
+    const joinForm = roomForms[1];
+
+    const roomNameInput = document.getElementById("room-name");
+    const roomCodeInput = document.getElementById("room-code");
+
+    const storageKey = "studysyncRooms";
+
+    function getRooms() {
+        return JSON.parse(localStorage.getItem(storageKey)) || [];
+    }
+
+    // Create a study room
+    createForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const roomName = roomNameInput.value.trim();
+
+        if (roomName === "") {
+            alert("Please enter a valid room name.");
+            roomNameInput.focus();
+            return;
+        }
+
+        const rooms = getRooms();
+
+        let roomCode;
+
+        do {
+            roomCode = Math.random()
+                .toString(36)
+                .substring(2, 8)
+                .toUpperCase();
+        } while (rooms.some(room => room.code === roomCode));
+
+        const newRoom = {
+            name: roomName,
+            code: roomCode
+        };
+
+        rooms.push(newRoom);
+
+        localStorage.setItem(storageKey, JSON.stringify(rooms));
+
+        alert(
+            "Room created successfully!\n" +
+            "Room Name: " + roomName +
+            "\nRoom Code: " + roomCode
+        );
+
+        createForm.reset();
+    });
+
+    // Join an existing study room
+    joinForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const roomCode = roomCodeInput.value.trim().toUpperCase();
+
+        if (roomCode === "") {
+            alert("Please enter a room code.");
+            roomCodeInput.focus();
+            return;
+        }
+
+        const rooms = getRooms();
+
+        const room = rooms.find(
+            room => room.code === roomCode
+        );
+
+        if (room) {
+            alert("Room found!\nYou joined: " + room.name);
+        } else {
+            alert("Room code not found. Please check the code.");
+        }
+
+        joinForm.reset();
+    });
+</script>
+</body>
+</html>
