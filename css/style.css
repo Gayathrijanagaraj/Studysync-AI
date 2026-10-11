@@ -667,3 +667,118 @@ footer {
         padding: 24px;
     }
 }
+
+/* Study Notes Page */
+
+.notes-page {
+    min-height: 100vh;
+    background: #f4f7fc;
+}
+
+.notes-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 24px;
+}
+
+.notes-heading {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.notes-heading h1 {
+    color: #1e293b;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+.notes-heading p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.notes-card {
+    background: #ffffff;
+    padding: 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.notes-card-heading {
+    margin-bottom: 28px;
+}
+
+.notes-card-heading h2 {
+    color: #1e293b;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.notes-card-heading p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.notes-card .form-group {
+    margin-bottom: 24px;
+}
+
+.notes-card label {
+    display: block;
+    color: #334155;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.notes-card input,
+.notes-card textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+    color: #1e293b;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.notes-card textarea {
+    resize: vertical;
+    min-height: 220px;
+    line-height: 1.6;
+}
+
+.notes-card input:focus,
+.notes-card textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.notes-card .auth-button {
+    min-width: 160px;
+    cursor: pointer;
+}
+
+#notes-message {
+    margin-top: 16px;
+    color: #166534;
+    line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+    .notes-content {
+        padding: 35px 16px;
+    }
+
+    .notes-heading h1 {
+        font-size: 1.8rem;
+    }
+
+    .notes-card {
+        padding: 22px;
+    }
+}

@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Notes | StudySync AI</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <main class="notes-page">
+
+        <header class="dashboard-header">
+            <a href="../index.html" class="dashboard-logo">
+                StudySync AI
+            </a>
+
+            <nav class="dashboard-nav">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="rooms.html">Study Rooms</a>
+                <a href="../index.html">Home</a>
+            </nav>
+        </header>
+
+        <section class="notes-content">
+
+            <div class="notes-heading">
+                <h1>Collaborative Study Notes</h1>
+                <p>Organize your ideas and keep your study notes in one place.</p>
+            </div>
+
+            <section class="notes-card">
+                <div class="notes-card-heading">
+                    <h2>My Notes</h2>
+                    <p>Write and edit your study notes below.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="note-title">Note Title</label>
+                    <input
+                        type="text"
+                        id="note-title"
+                        placeholder="Enter a title for your notes"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="note-content">Note Content</label>
+                    <textarea
+                        id="note-content"
+                        rows="12"
+                        placeholder="Start writing your study notes..."
+                    ></textarea>
+                </div>
+
+                <button type="button" class="auth-button" id="save-note">
+                    Save Notes
+                </button>
+
+                <p id="notes-message" role="status" aria-live="polite"></p>
+            </section>
+
+        </section>
+
+    </main>
+    
+<script>
+    const titleInput = document.getElementById("note-title");
+    const contentInput = document.getElementById("note-content");
+    const saveButton = document.getElementById("save-note");
+    const message = document.getElementById("notes-message");
+
+    // Restore saved notes when the page opens
+    const savedNotes = JSON.parse(
+        localStorage.getItem("studysyncNotes") || "null"
+    );
+
+    if (savedNotes) {
+        titleInput.value = savedNotes.title || "";
+        contentInput.value = savedNotes.content || "";
+    }
+
+    // Save notes in the browser
+    saveButton.addEventListener("click", function () {
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
+
+        if (title === "" || content === "") {
+            message.textContent = "Please enter both a title and note content.";
+            message.style.color = "#b91c1c";
+            return;
+        }
+
+        const notes = {
+            title: title,
+            content: content
+        };
+
+        localStorage.setItem("studysyncNotes", JSON.stringify(notes));
+
+        message.textContent = "Your notes have been saved successfully!";
+        message.style.color = "#166534";
+    });
+</script>
+</body>
+</html>
