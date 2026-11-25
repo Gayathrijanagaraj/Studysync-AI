@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the study crew - StudySync AI</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <!-- LEFT PANEL: PURPLE HERO (Pixel-Matched to Register@1x.png with Gayathri Reference) -->
+    <div class="auth-hero-panel">
+      <!-- Decorative Shapes -->
+      <div class="shape-yellow-circle" aria-hidden="true"></div>
+      <div class="shape-coral-circle" aria-hidden="true"></div>
+      <div class="shape-mint-squircle" aria-hidden="true"></div>
+
+      <!-- Brand Header -->
+      <header class="brand-header">
+        <div class="brand-icon-pill" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="brand-name">Study Sync AI</span>
+      </header>
+
+      <!-- Main Display Content -->
+      <div class="hero-content">
+        <h1 class="hero-heading">Study smarter,<br>together!</h1>
+        <p class="hero-subtitle">
+          Study with friends on one shared page, and get a helping hand from AI right where you are stuck.
+        </p>
+
+        <!-- Conversational Preview Cards -->
+        <div class="chat-previews">
+          <!-- Student Chat Card (Gayathri) -->
+          <div class="chat-bubble-card">
+            <div class="avatar-circle avatar-student">GK</div>
+            <div class="bubble-student">
+              <div class="bubble-sender">Gayathri</div>
+              <div class="bubble-text">DFS always uses less memory, right?</div>
+            </div>
+          </div>
+
+          <!-- AI Assistant Chat Card -->
+          <div class="chat-bubble-card ai-reply">
+            <div class="avatar-circle avatar-ai">AI</div>
+            <div class="bubble-ai">
+              <div class="bubble-sender">AI assistant</div>
+              <div class="bubble-text">Not always. On a long path graph, DFS uses more memory than BFS.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Pinned Tagline -->
+      <div class="hero-footer-tagline">
+        Every answer you find is saved for the next student.
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: WARM IVORY FORM -->
+    <div class="auth-form-panel">
+      <div class="form-box">
+        <div class="form-header">
+          <h2 class="form-title">Join the study crew!</h2>
+          <p class="form-subtitle">It takes under a minute and it is free for students.</p>
+        </div>
+
+        <!-- Google Sign-Up Button (Pill) -->
+        <button type="button" id="googleSignInBtn" class="btn-google">
+          Sign up with Google
+        </button>
+
+        <div class="auth-divider">
+          <span>or use email</span>
+        </div>
+
+        <!-- Feedback Alert Container -->
+        <div id="authAlert" class="alert hidden" role="alert"></div>
+
+        <!-- Register Form -->
+        <form id="registerForm" novalidate>
+          <div class="form-group">
+            <label for="name" class="form-label">Full name</label>
+            <input 
+              type="text" 
+              id="name" 
+              class="form-input" 
+              placeholder="Gayathri" 
+              required 
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">College email</label>
+            <input 
+              type="email" 
+              id="email" 
+              class="form-input" 
+              placeholder="gayathri@college.edu" 
+              required 
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="course" class="form-label">Course or subject (optional)</label>
+            <input 
+              type="text" 
+              id="course" 
+              class="form-input" 
+              placeholder="e.g. CS201 Data Structures"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              class="form-input" 
+              placeholder="At least 8 characters" 
+              required 
+              autocomplete="new-password"
+            >
+            <p class="form-helper">Use 8 or more characters with a number.</p>
+          </div>
+
+          <!-- Checkbox for Terms and Privacy with AI Session Observation clause -->
+          <div class="form-checkbox-row">
+            <input type="checkbox" id="terms" class="custom-checkbox" required>
+            <label for="terms" class="checkbox-label">
+              I agree to the Terms and Privacy Policy, including AI observing sessions I join.
+            </label>
+          </div>
+
+          <button type="submit" id="registerSubmitBtn" class="btn-primary-pill">
+            Create account
+          </button>
+        </form>
+
+        <div class="auth-footer-nav">
+          Already have an account? <a href="login.html">Log in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
+</html>
