@@ -28,13 +28,15 @@ exports.getStats = async (req, res, next) => {
     const formattedRecentRooms = await Promise.all(
       recentRooms.map(async (r) => {
         const memberCount = await RoomMember.countDocuments({ roomId: r._id });
+        const isOwner = r.ownerId ? (r.ownerId._id ? r.ownerId._id.toString() : r.ownerId.toString()) === userId.toString() : false;
+        const ownerName = r.ownerId ? (r.ownerId.name || 'Student') : 'Student';
         return {
           id: r._id,
           name: r.name,
           subject: r.subject,
           roomCode: r.roomCode,
-          isOwner: r.ownerId._id.toString() === userId.toString(),
-          ownerName: r.ownerId.name,
+          isOwner,
+          ownerName,
           memberCount,
           updatedAt: r.updatedAt
         };

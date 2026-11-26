@@ -28,8 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 3. Load Room Information
   let currentRoom = null;
+  let roomRes = null;
   try {
-    const roomRes = await API.getRoom(roomId);
+    roomRes = await API.getRoom(roomId);
     if (!roomRes || !roomRes.success || !roomRes.data) {
       alert('Could not access this study room. You might not be a member.');
       window.location.replace('/pages/rooms.html');
@@ -104,7 +105,59 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupTabSwitching();
 
   // 7. Initialize Sub-modules
-  const isOwner = !!roomRes.data.isOwner || (currentRoom.ownerId && (currentRoom.ownerId._id || currentRoom.ownerId).toString() === currentUser.id.toString());
+  const isOwner = !!(roomRes && roomRes.data && roomRes.data.isOwner) || (currentRoom && currentRoom.ownerId && (currentRoom.ownerId._id || currentRoom.ownerId).toString() === currentUser.id.toString());
+
+  // 7b. Topbar Workspace Actions (Host: End Session / Reopen Room; Joiners: strictly Leave Room only)
+  const topbarEndBtn = document.getElementById('btnTopbarEndSession');
+  const topbarReopenBtn = document.getElementById('btnTopbarReopen');
+
+  if (isOwner) {
+    if (currentRoom.status === 'closed') {
+      topbarEndBtn?.classList.add('hidden');
+      topbarReopenBtn?.classList.remove('hidden');
+    } else {
+      topbarEndBtn?.classList.remove('hidden');
+      topbarReopenBtn?.classList.add('hidden');
+    }
+
+    topbarEndBtn?.addEventListener('click', async () => {
+      if (!confirm('End current study session and close room? This will lock the workspace in read-only mode and generate an automated AI recap.')) {
+        return;
+      }
+      topbarEndBtn.disabled = true;
+      topbarEndBtn.textContent = '⏳ Ending...';
+      try {
+        const res = await API.endSession(roomId);
+        if (typeof stopLocalTimerInterval === 'function') stopLocalTimerInterval();
+        if (typeof resetSessionHUD === 'function') resetSessionHUD();
+        if (res && res.success && res.data && res.data.session && typeof openSessionRecapModal === 'function') {
+          openSessionRecapModal(res.data.session);
+        }
+        enableReadOnlyMode(true);
+      } catch (err) {
+        alert(err.message || 'Failed to end study session.');
+        topbarEndBtn.disabled = false;
+        topbarEndBtn.textContent = '🏁 End Session';
+      }
+    });
+
+    topbarReopenBtn?.addEventListener('click', async () => {
+      topbarReopenBtn.disabled = true;
+      topbarReopenBtn.textContent = '↺ Reopening...';
+      try {
+        await API.reopenRoom(roomId);
+        window.location.reload();
+      } catch (err) {
+        alert(err.message || 'Failed to reopen room.');
+        topbarReopenBtn.disabled = false;
+        topbarReopenBtn.textContent = '↺ Reopen Room';
+      }
+    });
+  } else {
+    // Non-host / Joiner: Strictly only sees "Leave Room"
+    topbarEndBtn?.classList.add('hidden');
+    topbarReopenBtn?.classList.add('hidden');
+  }
 
   if (typeof initChat === 'function') {
     initChat(socket, roomId, currentUser);
@@ -146,16 +199,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const reopenBtn = document.getElementById('btnReopenWorkspaceRoom');
-    if (reopenBtn && isHost) {
-      reopenBtn.classList.remove('hidden');
-      reopenBtn.addEventListener('click', async () => {
-        try {
-          await API.reopenRoom(roomId);
-          window.location.reload();
-        } catch (err) {
-          alert(err.message || 'Could not reopen room.');
-        }
-      });
+    const topbarEndBtn = document.getElementById('btnTopbarEndSession');
+    const topbarReopenBtn = document.getElementById('btnTopbarReopen');
+
+    if (isHost) {
+      topbarEndBtn?.classList.add('hidden');
+      topbarReopenBtn?.classList.remove('hidden');
+      if (reopenBtn) {
+        reopenBtn.classList.remove('hidden');
+        reopenBtn.onclick = async () => {
+          try {
+            await API.reopenRoom(roomId);
+            window.location.reload();
+          } catch (err) {
+            alert(err.message || 'Could not reopen room.');
+          }
+        };
+      }
+    } else {
+      // Non-host / Joiner: Keep all host controls hidden
+      topbarEndBtn?.classList.add('hidden');
+      topbarReopenBtn?.classList.add('hidden');
+      if (reopenBtn) reopenBtn.classList.add('hidden');
     }
 
     // 1. Lock Notes (Disable textarea/contenteditable and tools)
@@ -201,6 +266,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (raiseDoubtBtn) {
       raiseDoubtBtn.style.display = 'none';
     }
+    document.querySelectorAll('.btn-solve-ai, .btn-upvote-doubt').forEach(btn => {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+    });
 
     // 5. Lock Session HUD
     const btnToggle = document.getElementById('btnToggleSession');
@@ -212,6 +282,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const timerDisplay = document.getElementById('sessionTimerDisplay');
     if (timerDisplay) timerDisplay.textContent = 'Room Closed';
   }
+  window.enableReadOnlyMode = enableReadOnlyMode;
 
   function renderParticipantsRoster(allMembers, onlineUsers) {
     const list = document.getElementById('participantsList');
