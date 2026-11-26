@@ -233,7 +233,7 @@ textarea.form-input {
 
 .btn-hero-primary {
   background-color: var(--color-primary, #4F46E5);
-  color: #FFFFFF !important;
+  color: #FFFFFF;
   border: none;
   box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
 }

@@ -185,6 +185,9 @@ async function handleSessionEnd() {
       stopLocalTimerInterval();
       resetSessionHUD();
       openSessionRecapModal(res.data.session);
+      if (typeof window.enableReadOnlyMode === 'function') {
+        window.enableReadOnlyMode(true);
+      }
     }
   } catch (err) {
     alert(err.message || 'Failed to end study session.');
@@ -262,17 +265,15 @@ function updateSessionHUD() {
 
   // Enforce host-only permissions for timer control
   if (!sessionState.isOwner) {
+    const hudControls = document.querySelector('.session-hud-controls');
+    if (hudControls) {
+      hudControls.style.display = 'none';
+    }
     if (btnToggle) {
-      btnToggle.disabled = true;
-      btnToggle.title = 'Only the study room host can start/pause the study session.';
-      btnToggle.style.opacity = '0.5';
-      btnToggle.style.cursor = 'not-allowed';
+      btnToggle.style.display = 'none';
     }
     if (btnEnd) {
-      btnEnd.disabled = true;
-      btnEnd.title = 'Only the room host who created the room can end the study session.';
-      btnEnd.style.opacity = '0.5';
-      btnEnd.style.cursor = 'not-allowed';
+      btnEnd.style.display = 'none';
     }
     if (modeSelect) {
       modeSelect.disabled = true;
