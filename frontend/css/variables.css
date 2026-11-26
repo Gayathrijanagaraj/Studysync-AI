@@ -17,12 +17,14 @@
   --color-bg-ivory: #FAF8F3;
   --color-bg-white: #FFFFFF;
   --color-bg-input: #FFFFFF;
+  --color-white: #FFFFFF;
 
   /* Text & Border Colors */
   --color-text-navy: #1A1D36;
   --color-text-slate: #2D3748;
   --color-text-muted: #6B7280;
   --color-text-subtle: #9CA3AF;
+  --color-border: #E2E8F0;
   --color-border-soft: #D8DEFE;
   --color-border-input: #D5DCFD;
   --color-border-focus: #4F46E5;

@@ -78,9 +78,23 @@ exports.getRooms = async (req, res, next) => {
       query = { ownerId: userId };
     } else if (filter === 'joined') {
       query = { _id: { $in: joinedRoomIds }, ownerId: { $ne: userId } };
+    } else if (filter === 'public') {
+      query = { visibility: 'public', status: 'active' };
     } else {
       // All rooms user has joined or created
       query = { _id: { $in: joinedRoomIds } };
+    }
+
+    if (req.query.subject) {
+      query.subject = new RegExp(req.query.subject.trim(), 'i');
+    }
+    if (req.query.search) {
+      const term = req.query.search.trim();
+      query.$or = [
+        { name: new RegExp(term, 'i') },
+        { subject: new RegExp(term, 'i') },
+        { description: new RegExp(term, 'i') }
+      ];
     }
 
     const rooms = await Room.find(query)
@@ -258,7 +272,7 @@ exports.leaveRoom = async (req, res, next) => {
 
 /**
  * POST /api/rooms/:roomId/close
- * Owner closes the study room
+ * Owner closes the study room, ending any active study sessions and placing workspace in read-only mode
  */
 exports.closeRoom = async (req, res, next) => {
   try {
@@ -266,9 +280,129 @@ exports.closeRoom = async (req, res, next) => {
     room.status = 'closed';
     await room.save();
 
+    // End any active or paused study session for this room
+    const StudySession = require('../models/StudySession');
+    const activeSession = await StudySession.findOne({
+      roomId: room._id,
+      status: { $in: ['active', 'paused'] }
+    });
+
+    if (activeSession) {
+      if (activeSession.status === 'active' && activeSession.startTime) {
+        const delta = Math.floor((Date.now() - new Date(activeSession.startTime).getTime()) / 1000);
+        activeSession.durationSeconds = (activeSession.durationSeconds || 0) + Math.max(0, delta);
+      }
+      activeSession.status = 'completed';
+      activeSession.endTime = new Date();
+      activeSession.endedBy = req.session.user.id;
+      await activeSession.save();
+    }
+
+    const io = req.app.get('io');
+    if (io) {
+      if (activeSession) {
+        io.to(room._id.toString()).emit('session:ended', {
+          session: activeSession,
+          endedBy: req.session.user.name,
+          reason: 'Study room closed by host'
+        });
+      }
+      io.to(room._id.toString()).emit('room:closed', {
+        roomId: room._id,
+        status: 'closed',
+        closedBy: req.session.user.name
+      });
+    }
+
     return res.status(200).json({
       success: true,
-      message: 'Study room has been closed successfully.'
+      message: 'Study room has been closed successfully and is now read-only. Active sessions have been completed.',
+      data: { room }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * POST /api/rooms/:roomId/reopen
+ * Owner reopens a closed study room
+ */
+exports.reopenRoom = async (req, res, next) => {
+  try {
+    const room = req.room;
+    room.status = 'active';
+    await room.save();
+
+    const io = req.app.get('io');
+    if (io) {
+      io.to(room._id.toString()).emit('room:reopened', {
+        roomId: room._id,
+        status: 'active',
+        reopenedBy: req.session.user.name
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Study room has been reopened successfully.',
+      data: { room }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PATCH /api/rooms/:roomId/status
+ * Owner updates room status (active, closed)
+ */
+exports.updateRoomStatus = async (req, res, next) => {
+  try {
+    const room = req.room;
+    const { status } = req.body;
+    if (!['active', 'closed'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid room status. Allowed values: active, closed.'
+      });
+    }
+
+    room.status = status;
+    await room.save();
+
+    // If setting to closed, end any active session
+    if (status === 'closed') {
+      const StudySession = require('../models/StudySession');
+      const activeSession = await StudySession.findOne({
+        roomId: room._id,
+        status: { $in: ['active', 'paused'] }
+      });
+      if (activeSession) {
+        if (activeSession.status === 'active' && activeSession.startTime) {
+          const delta = Math.floor((Date.now() - new Date(activeSession.startTime).getTime()) / 1000);
+          activeSession.durationSeconds = (activeSession.durationSeconds || 0) + Math.max(0, delta);
+        }
+        activeSession.status = 'completed';
+        activeSession.endTime = new Date();
+        activeSession.endedBy = req.session.user.id;
+        await activeSession.save();
+      }
+    }
+
+    const io = req.app.get('io');
+    if (io) {
+      io.to(room._id.toString()).emit(status === 'closed' ? 'room:closed' : 'room:reopened', {
+        roomId: room._id,
+        status,
+        updatedBy: req.session.user.name
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Study room status updated to ${status}.`,
+      data: { room }
     });
   } catch (error) {
     next(error);

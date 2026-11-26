@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Workspace - StudySync AI</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/workspace.css">
+  <link rel="stylesheet" href="../css/chat.css">
+  <link rel="stylesheet" href="../css/whiteboard.css">
+  <link rel="stylesheet" href="../css/doubts.css">
+  <link rel="stylesheet" href="../css/session.css">
+</head>
+<body>
+  <div class="workspace-layout">
+    <!-- Topbar -->
+    <header class="workspace-topbar">
+      <div class="topbar-left">
+        <a href="/pages/dashboard.html" class="btn-back-dashboard">
+          ← Dashboard
+        </a>
+        <div class="room-meta-group">
+          <h1 class="workspace-room-title" id="workspaceRoomTitle">Study Room</h1>
+          <span class="workspace-subject-tag" id="workspaceSubjectTag">Subject</span>
+          <button type="button" class="room-code-pill" id="workspaceRoomCode" title="Click to copy room code">
+            SYNC-XXXX
+          </button>
+        </div>
+      </div>
+
+      <div class="topbar-center">
+        <!-- Study Session Live HUD -->
+        <div class="session-hud-container" id="sessionHud">
+          <div class="session-hud-timer-wrap">
+            <span class="session-status-dot" id="sessionStatusDot"></span>
+            <span class="session-timer-display" id="sessionTimerDisplay">00:00</span>
+          </div>
+
+          <div class="session-mode-dropdown-wrap">
+            <select id="sessionModeSelect" class="session-mode-select" title="Choose timer mode">
+              <option value="stopwatch">⏱️ Stopwatch</option>
+              <option value="pomodoro_25">🍅 Pomodoro (25m)</option>
+              <option value="focus_50">⚡ Focus Block (50m)</option>
+            </select>
+          </div>
+
+          <div class="session-hud-controls">
+            <button type="button" class="btn-session-control btn-session-toggle" id="btnToggleSession" title="Start study session">
+              ▶ Start
+            </button>
+            <button type="button" class="btn-session-control btn-session-end" id="btnEndSession" title="End session & generate AI recap" disabled>
+              🏁 Recap
+            </button>
+          </div>
+        </div>
+
+        <div class="connection-indicator">
+          <div class="connection-dot" id="connectionDot"></div>
+          <span id="connectionText">Connected</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="participant-count-pill" id="onlineCountBadge">
+          👥 1 online
+        </div>
+        <!-- Host End Session action (Only visible to the room host who created the room) -->
+        <button type="button" class="btn-topbar-end-session hidden" id="btnTopbarEndSession" title="End study session & lock room in read-only mode">
+          🏁 End Session
+        </button>
+        <button type="button" class="btn-topbar-reopen hidden" id="btnTopbarReopen" title="Reopen study room for active collaboration">
+          ↺ Reopen Room
+        </button>
+        <!-- Leave Room action (Available for peers/joiners) -->
+        <a href="/pages/dashboard.html" class="btn-leave-workspace" id="btnLeaveWorkspace">
+          Leave Room
+        </a>
+      </div>
+    </header>
+
+    <!-- Closed / Read-Only Warning Banner -->
+    <div id="closedRoomBanner" class="closed-room-banner hidden">
+      <div class="closed-room-message">
+        <span class="closed-lock-icon">🔒</span>
+        <span><strong>This study room has been closed by the host.</strong> All tools (shared notes, whiteboard, doubts, group chat) are archived in <strong>Read-Only</strong> mode.</span>
+      </div>
+      <button type="button" class="btn-reopen-workspace-room hidden" id="btnReopenWorkspaceRoom">
+        ↺ Reopen Room
+      </button>
+    </div>
+
+    <!-- Main Workspace Body -->
+    <div class="workspace-body">
+      <!-- Left Sidebar (Participants & Details) -->
+      <aside class="workspace-left-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title">Room Overview</div>
+          <h2 style="font-size: 15px; font-weight: 700; color: var(--color-text-navy); margin-bottom: 6px;" id="sidebarRoomName">
+            Study Room
+          </h2>
+          <p style="font-size: 13px; color: var(--color-text-muted); line-height: 1.45; margin-bottom: 12px;" id="sidebarRoomDesc">
+            Collaborative study session.
+          </p>
+          <div style="font-size: 12px; color: #64748B;">
+            Invite Code: <strong style="font-family: monospace; color: var(--color-primary); cursor: pointer;" id="sidebarRoomCode">SYNC-XXXX</strong>
+          </div>
+        </div>
+
+        <div class="sidebar-section" style="flex:1;">
+          <div class="sidebar-title">Participants Roster</div>
+          <div class="participants-list" id="participantsList">
+            <!-- Dynamically populated via workspace.js -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Stage (Shared Notes & Whiteboard) -->
+      <main class="workspace-center-stage">
+        <div class="stage-tab-header">
+          <div class="stage-tabs">
+            <button type="button" class="stage-tab-btn active" id="tabBtnNotes">
+              📝 Shared Notes
+            </button>
+            <button type="button" class="stage-tab-btn" id="tabBtnWhiteboard">
+              🎨 Collaborative Whiteboard
+            </button>
+            <button type="button" class="stage-tab-btn" id="tabBtnDoubts">
+              ❓ Doubt Tracker <span class="tab-badge badge-zero" id="doubtsBadge">0</span>
+            </button>
+          </div>
+          <div class="notes-save-status" id="notesSaveStatus">
+            All changes saved
+          </div>
+        </div>
+
+        <div class="stage-tab-content">
+          <!-- Shared Notes View -->
+          <div class="notes-container" id="notesView">
+            <div class="notes-toolbar">
+              <button type="button" class="notes-tool-btn" data-tool="h1">H1</button>
+              <button type="button" class="notes-tool-btn" data-tool="h2">H2</button>
+              <button type="button" class="notes-tool-btn" data-tool="bold"><strong>B</strong></button>
+              <button type="button" class="notes-tool-btn" data-tool="italic"><em>I</em></button>
+              <button type="button" class="notes-tool-btn" data-tool="bullet">• Bullet</button>
+              <button type="button" class="notes-tool-btn" data-tool="number">1. Number</button>
+              <button type="button" class="notes-tool-btn" data-tool="clear" style="margin-left:auto; color:#EF4444;">Clear</button>
+            </div>
+            <textarea 
+              id="sharedNotesTextarea" 
+              class="notes-textarea" 
+              placeholder="Start drafting study notes together in real time..."
+            ></textarea>
+          </div>
+
+          <!-- Collaborative Whiteboard View -->
+          <div class="whiteboard-container hidden" id="whiteboardView">
+            <div class="whiteboard-toolbar">
+              <div class="tool-group">
+                <button type="button" class="btn-wb-tool active" id="toolPencil" title="Pencil">✏️</button>
+                <button type="button" class="btn-wb-tool" id="toolEraser" title="Eraser">🧹</button>
+              </div>
+
+              <div class="toolbar-divider"></div>
+
+              <div class="tool-group">
+                <div class="color-swatch active" style="background-color: #1A1D36;" data-color="#1A1D36" title="Dark Slate"></div>
+                <div class="color-swatch" style="background-color: #4F46E5;" data-color="#4F46E5" title="Royal Purple"></div>
+                <div class="color-swatch" style="background-color: #18D2A5;" data-color="#18D2A5" title="Mint"></div>
+                <div class="color-swatch" style="background-color: #FF6B7A;" data-color="#FF6B7A" title="Coral"></div>
+                <div class="color-swatch" style="background-color: #FFC72C;" data-color="#FFC72C" title="Yellow"></div>
+              </div>
+
+              <div class="toolbar-divider"></div>
+
+              <button type="button" class="btn-wb-tool" id="toolClearBoard" title="Clear whiteboard" style="color: #EF4444;">
+                🗑️
+              </button>
+            </div>
+
+            <div class="canvas-wrapper">
+              <canvas id="whiteboardCanvas"></canvas>
+            </div>
+          </div>
+
+          <!-- In-Room Doubt Tracker View -->
+          <div class="doubts-container hidden" id="doubtsView">
+            <div class="doubts-top-bar">
+              <div class="doubts-filter-group">
+                <button type="button" class="doubts-filter-btn active" data-filter="all">All</button>
+                <button type="button" class="doubts-filter-btn" data-filter="open">Open</button>
+                <button type="button" class="doubts-filter-btn" data-filter="resolved">Resolved</button>
+              </div>
+              <div class="doubts-search-box">
+                <span class="doubts-search-icon">🔍</span>
+                <input type="text" class="doubts-search-input" id="doubtsSearchInput" placeholder="Search doubts or #tags...">
+              </div>
+              <button type="button" class="btn-raise-doubt" id="btnOpenRaiseDoubtModal">
+                + Raise a Doubt
+              </button>
+            </div>
+            <div class="doubts-scroll-area" id="doubtsScrollArea">
+              <!-- Dynamically populated via doubts.js -->
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Drawer (Live Group Chat & AI Assistant) -->
+      <aside class="workspace-right-drawer">
+        <div class="drawer-tab-header">
+          <div class="drawer-tabs">
+            <button type="button" class="drawer-tab-btn active" id="tabBtnChat">
+              💬 Group Chat
+            </button>
+            <button type="button" class="drawer-tab-btn" id="tabBtnAI">
+              🤖 AI Assistant
+            </button>
+          </div>
+        </div>
+
+        <div class="drawer-tab-content">
+          <!-- Live Chat View -->
+          <div class="chat-container" id="chatView">
+            <div class="chat-messages-container" id="chatMessagesContainer">
+              <!-- Dynamically populated via chat.js -->
+            </div>
+
+            <div class="typing-indicator-bar" id="typingIndicatorBanner"></div>
+
+            <form id="chatForm" class="chat-input-bar">
+              <input 
+                type="text" 
+                id="chatInput" 
+                class="chat-input-field" 
+                placeholder="Message your study crew..." 
+                autocomplete="off"
+              >
+              <button type="submit" class="btn-chat-send" aria-label="Send message">
+                ➤
+              </button>
+            </form>
+          </div>
+
+          <!-- AI Assistant View -->
+          <div class="ai-drawer-container hidden" id="aiView">
+            <div class="ai-actions-toolbar">
+              <button type="button" class="btn-ai-quick" id="btnQuickExplainChat">
+                🔍 Analyze Discussion
+              </button>
+              <button type="button" class="btn-ai-quick" id="btnQuickIdentifyGaps">
+                🎯 Identify Gaps
+              </button>
+            </div>
+
+            <div class="ai-responses-scroll" id="aiResponsesContainer">
+              <!-- Welcome AI Card -->
+              <div class="ai-card">
+                <div class="ai-card-header">
+                  <span class="ai-card-badge">🤖 StudySync AI</span>
+                </div>
+                <div class="ai-card-body">
+                  <p><strong>Hi there! I am your study room AI assistant.</strong></p>
+                  <p>Ask any question about this study topic, or click <em>"Ask AI"</em> on any confusing chat message to get instant clarity!</p>
+                </div>
+              </div>
+            </div>
+
+            <form id="aiAskForm" class="chat-input-bar">
+              <input 
+                type="text" 
+                id="aiCustomQuestion" 
+                class="chat-input-field" 
+                placeholder="Ask AI a question on this subject..." 
+                autocomplete="off"
+              >
+              <button type="submit" id="btnSubmitAIQuestion" class="btn-chat-send" style="background-color: var(--color-accent-mint); color: #064E3B;" aria-label="Ask AI">
+                ✨
+              </button>
+            </form>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Raise Doubt Modal -->
+  <div class="doubt-modal-overlay hidden" id="raiseDoubtModal">
+    <div class="doubt-modal-card">
+      <div class="doubt-modal-header">
+        <h2 class="doubt-modal-title">❓ Raise a Study Doubt</h2>
+        <button type="button" class="doubt-modal-close" onclick="closeRaiseDoubtModal()" aria-label="Close modal">✕</button>
+      </div>
+      <form id="raiseDoubtForm">
+        <div class="doubt-modal-body">
+          <div class="doubt-form-group">
+            <label for="doubtInputTitle" class="doubt-form-label">Doubt Title *</label>
+            <input type="text" id="doubtInputTitle" class="doubt-form-input" placeholder="e.g. Why does Dijkstra's algorithm fail with negative edge weights?" required>
+          </div>
+          <div class="doubt-form-group">
+            <label for="doubtInputDesc" class="doubt-form-label">Detailed Explanation *</label>
+            <textarea id="doubtInputDesc" class="doubt-form-textarea" placeholder="Explain the exact point where you are confused or got stuck..." required></textarea>
+          </div>
+          <div class="doubt-form-group">
+            <label for="doubtInputTags" class="doubt-form-label">Tags (comma-separated)</label>
+            <input type="text" id="doubtInputTags" class="doubt-form-input" placeholder="graphs, algorithms, shortest-path">
+            <span class="doubt-form-hint">Tags help peers and AI categorize your question quickly.</span>
+          </div>
+        </div>
+        <div class="doubt-modal-footer">
+          <button type="button" class="btn-modal-cancel" onclick="closeRaiseDoubtModal()">Cancel</button>
+          <button type="submit" id="btnSubmitDoubt" class="btn-modal-submit">Post Doubt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Post-Session AI Recap Modal -->
+  <div class="session-modal-overlay hidden" id="sessionRecapModal">
+    <div class="session-modal-card">
+      <div class="session-modal-header">
+        <div class="session-modal-header-left">
+          <span class="session-modal-badge">🎓</span>
+          <div>
+            <h2 class="session-modal-title">Study Session Completed!</h2>
+            <p class="session-modal-subtitle">AI-synthesized session summary and revision takeaways</p>
+          </div>
+        </div>
+        <button type="button" class="session-modal-close" onclick="closeSessionRecapModal()" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="session-modal-body">
+        <!-- Metric Cards -->
+        <div class="session-stats-grid">
+          <div class="session-stat-card">
+            <div class="session-stat-val" id="recapDurationVal">0 min</div>
+            <div class="session-stat-lbl">Focus Time</div>
+          </div>
+          <div class="session-stat-card">
+            <div class="session-stat-val" id="recapDoubtsVal">0</div>
+            <div class="session-stat-lbl">Doubts Discussed</div>
+          </div>
+          <div class="session-stat-card">
+            <div class="session-stat-val" id="recapMessagesVal">0</div>
+            <div class="session-stat-lbl">Chat Messages</div>
+          </div>
+        </div>
+
+        <!-- AI Summary Content -->
+        <div class="session-recap-box">
+          <div class="session-recap-header">
+            <span class="session-recap-badge">✨ StudySync AI Recap</span>
+            <span class="session-recap-model">Gemini 3.5 Flash</span>
+          </div>
+          <div class="session-recap-content" id="recapContentArea">
+            Generating summary...
+          </div>
+        </div>
+      </div>
+
+      <div class="session-modal-footer">
+        <button type="button" class="btn-recap-action btn-recap-copy" onclick="copyRecapToClipboard()">
+          📋 Copy Summary
+        </button>
+        <button type="button" class="btn-recap-action btn-recap-save" id="btnSaveRecapToKB" onclick="saveRecapToKnowledgeBase()">
+          💾 Save to Knowledge Base
+        </button>
+        <button type="button" class="btn-recap-action btn-recap-copy" onclick="closeSessionRecapModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Libraries -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/chat.js"></script>
+  <script src="../js/notes.js"></script>
+  <script src="../js/whiteboard.js"></script>
+  <script src="../js/ai-assistant.js"></script>
+  <script src="../js/doubts.js"></script>
+  <script src="../js/session.js"></script>
+  <script src="../js/workspace.js"></script>
+</body>
+</html>

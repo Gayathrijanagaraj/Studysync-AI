@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudySync AI</title>
+  <script>
+    // Admin module has been removed - redirect to Student Portal
+    window.location.replace('/pages/dashboard.html');
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Global Navigation Bar -->
+    <nav class="app-navbar">
+      <div class="nav-brand">
+        <div class="brand-icon-pill-nav" style="background-color: #6B21A8;" aria-hidden="true">
+          <span style="background-color: #FFFFFF;"></span>
+          <span style="background-color: #FFFFFF;"></span>
+          <span style="background-color: #FFFFFF;"></span>
+        </div>
+        <span class="nav-brand-title">StudySync AI <small style="font-size: 11px; background: #EEF2FF; color: #4F46E5; padding: 2px 8px; border-radius: 20px; font-weight: 800; border: 1px solid #C7D2FE; margin-left: 6px;">ADMIN CONSOLE</small></span>
+      </div>
+
+      <div class="nav-links">
+        <a href="/pages/dashboard.html" class="nav-link-item">← Student Portal</a>
+        <a href="/pages/rooms.html" class="nav-link-item">Rooms</a>
+        <a href="/pages/sessions.html" class="nav-link-item">Sessions</a>
+        <a href="/pages/admin.html" class="nav-link-item active nav-link-admin">🛡️ Platform Overview</a>
+      </div>
+
+      <div class="nav-user-actions">
+        <div class="user-profile-badge">
+          <div class="user-avatar-circle" style="background-color: #6B21A8;">AD</div>
+          <span class="user-display-name" id="adminNavName">Administrator</span>
+        </div>
+        <button type="button" class="btn-nav-logout" id="adminLogoutBtn">Log out</button>
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="admin-container">
+      <!-- Header Banner -->
+      <header class="admin-header">
+        <div class="admin-header-left">
+          <div class="admin-shield-icon">🛡️</div>
+          <div>
+            <h1 class="admin-title">Platform Administrator Console</h1>
+            <p class="admin-subtitle">Real-time system telemetry, student account management, and study room oversight.</p>
+          </div>
+        </div>
+
+        <div class="admin-health-pill">
+          <div class="admin-health-dot" id="systemHealthDot"></div>
+          <span id="systemHealthText">All Systems Operational</span>
+        </div>
+      </header>
+
+      <!-- Overview Metrics Grid -->
+      <section class="admin-metrics-grid">
+        <div class="admin-metric-card">
+          <div class="admin-metric-header">
+            <span class="admin-metric-label">Registered Students</span>
+            <span class="admin-metric-icon">👥</span>
+          </div>
+          <div class="admin-metric-number" id="metricTotalUsers">0</div>
+          <div class="admin-metric-subtext"><span id="metricActiveUsers">0</span> active accounts</div>
+        </div>
+
+        <div class="admin-metric-card">
+          <div class="admin-metric-header">
+            <span class="admin-metric-label">Study Rooms</span>
+            <span class="admin-metric-icon">📚</span>
+          </div>
+          <div class="admin-metric-number" id="metricTotalRooms">0</div>
+          <div class="admin-metric-subtext"><span id="metricActiveRooms">0</span> active workspaces</div>
+        </div>
+
+        <div class="admin-metric-card">
+          <div class="admin-metric-header">
+            <span class="admin-metric-label">Doubt Resolution</span>
+            <span class="admin-metric-icon">❓</span>
+          </div>
+          <div class="admin-metric-number" id="metricResolutionRate">0%</div>
+          <div class="admin-metric-subtext"><span id="metricResolvedDoubts">0</span> of <span id="metricTotalDoubts">0</span> doubts solved</div>
+        </div>
+
+        <div class="admin-metric-card">
+          <div class="admin-metric-header">
+            <span class="admin-metric-label">Focus Hours Logged</span>
+            <span class="admin-metric-icon">⏱️</span>
+          </div>
+          <div class="admin-metric-number" id="metricStudyHours">0.0h</div>
+          <div class="admin-metric-subtext"><span id="metricCompletedSessions">0</span> sessions completed</div>
+        </div>
+
+        <div class="admin-metric-card">
+          <div class="admin-metric-header">
+            <span class="admin-metric-label">Knowledge Vault</span>
+            <span class="admin-metric-icon">💡</span>
+          </div>
+          <div class="admin-metric-number" id="metricKnowledgeItems">0</div>
+          <div class="admin-metric-subtext">Saved notes & AI recaps</div>
+        </div>
+      </section>
+
+      <!-- Admin Tabs Navigation -->
+      <nav class="admin-tabs-nav">
+        <button type="button" class="admin-tab-btn active" id="tabBtnUsers">
+          👥 User Accounts (<span id="tabCountUsers">0</span>)
+        </button>
+        <button type="button" class="admin-tab-btn" id="tabBtnRooms">
+          📚 Study Rooms (<span id="tabCountRooms">0</span>)
+        </button>
+        <button type="button" class="admin-tab-btn" id="tabBtnDiagnostics">
+          💻 System Diagnostics
+        </button>
+      </nav>
+
+      <!-- Tab 1: User Management Panel -->
+      <section class="admin-panel-section" id="panelUsers">
+        <div class="admin-toolbar">
+          <div style="position:relative;">
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:13px; color:#94A3B8;">🔍</span>
+            <input type="text" id="userSearchInput" class="admin-search-input" placeholder="Search by name, email, institution...">
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px;">
+            <select id="userRoleFilter" class="kb-subject-select">
+              <option value="all">All Roles</option>
+              <option value="student">Students</option>
+              <option value="admin">Administrators</option>
+            </select>
+
+            <select id="userStatusFilter" class="kb-subject-select">
+              <option value="all">All Status</option>
+              <option value="active">Active Only</option>
+              <option value="inactive">Suspended</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Student / User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Institution & Department</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr>
+                <td colspan="7" style="text-align:center; padding:30px; color:#64748B;">Loading accounts...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 2: Study Rooms Management Panel -->
+      <section class="admin-panel-section hidden" id="panelRooms">
+        <div class="admin-toolbar">
+          <div style="position:relative;">
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:13px; color:#94A3B8;">🔍</span>
+            <input type="text" id="roomSearchInput" class="admin-search-input" placeholder="Search room name, subject, code...">
+          </div>
+
+          <select id="roomStatusFilter" class="kb-subject-select">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Room Name</th>
+                <th>Subject</th>
+                <th>Invite Code</th>
+                <th>Owner</th>
+                <th>Members</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="roomsTableBody">
+              <tr>
+                <td colspan="8" style="text-align:center; padding:30px; color:#64748B;">Loading study rooms...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 3: System Diagnostics Panel -->
+      <section class="admin-panel-section hidden" id="panelDiagnostics">
+        <div class="diagnostics-grid">
+          <div class="diag-card">
+            <span class="diag-card-title">Database State</span>
+            <span class="diag-card-val" id="diagMongoState" style="color:#10B981;">CONNECTED</span>
+            <span style="font-size:12px; color:#64748B;" id="diagMongoHost">MongoDB Atlas</span>
+          </div>
+
+          <div class="diag-card">
+            <span class="diag-card-title">Server Uptime</span>
+            <span class="diag-card-val" id="diagUptime">0h 0m</span>
+            <span style="font-size:12px; color:#64748B;">Node.js HTTP & Socket.IO Engine</span>
+          </div>
+
+          <div class="diag-card">
+            <span class="diag-card-title">Node.js Runtime</span>
+            <span class="diag-card-val" id="diagNodeVersion">v20.x</span>
+            <span style="font-size:12px; color:#64748B;">V8 Engine Production</span>
+          </div>
+
+          <div class="diag-card">
+            <span class="diag-card-title">Process Memory</span>
+            <span class="diag-card-val" id="diagMemory">0 MB</span>
+            <span style="font-size:12px; color:#64748B;">Heap Used Memory</span>
+          </div>
+
+          <div class="diag-card">
+            <span class="diag-card-title">Gemini AI Assistant</span>
+            <span class="diag-card-val" id="diagGemini" style="color:#4F46E5;">READY</span>
+            <span style="font-size:12px; color:#64748B;">gemini-3.5-flash with educational fallback</span>
+          </div>
+
+          <div class="diag-card">
+            <span class="diag-card-title">Real-Time Sockets</span>
+            <span class="diag-card-val" style="color:#059669;">ACTIVE</span>
+            <span style="font-size:12px; color:#64748B;">Socket.IO v4.8 (WebSocket + Polling)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Client Libraries -->
+  <script src="../js/api.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

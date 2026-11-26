@@ -1,5 +1,9 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const RoomMember = require('../models/RoomMember');
+const Doubt = require('../models/Doubt');
+const StudySession = require('../models/StudySession');
+const KnowledgeItem = require('../models/KnowledgeItem');
 
 /**
  * Auth Controller
@@ -28,6 +32,10 @@ exports.register = async (req, res, next) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid college email address.' });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email: normalizedEmail });
@@ -72,10 +80,10 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
       return res.status(400).json({
         success: false,
-        message: 'Please provide both email and password.'
+        message: 'Please provide both valid email and password strings.'
       });
     }
 
@@ -164,4 +172,132 @@ exports.forgotPassword = (req, res) => {
     success: true,
     message: 'Password reset email service is currently in development mode. Please contact your workspace administrator or team guide to reset credentials.'
   });
+};
+
+// GET /api/auth/profile
+exports.getProfile = async (req, res, next) => {
+  try {
+    const userId = req.session.user.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User profile not found.'
+      });
+    }
+
+    // Aggregate student learning metrics
+    const [roomsCount, doubtsCount, solvedDoubtsCount, sessionsCount, knowledgeCount] = await Promise.all([
+      RoomMember.countDocuments({ userId }),
+      Doubt.countDocuments({ author: userId }),
+      Doubt.countDocuments({ author: userId, status: 'resolved' }),
+      StudySession.countDocuments({
+        $or: [{ startedBy: userId }, { endedBy: userId }],
+        status: 'completed'
+      }),
+      KnowledgeItem.countDocuments({ userId })
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        user: user.toSafeObject(),
+        stats: {
+          roomsCount,
+          doubtsCount,
+          solvedDoubtsCount,
+          sessionsCount,
+          knowledgeCount
+        }
+      }
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// PUT /api/auth/profile
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const userId = req.session.user.id;
+    const { name, institution, department, bio } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.'
+      });
+    }
+
+    if (name && name.trim()) user.name = name.trim();
+    if (institution !== undefined) user.institution = institution.trim();
+    if (department !== undefined) user.department = department.trim();
+    if (bio !== undefined) user.bio = bio.trim();
+
+    await user.save();
+
+    // Update session user cache
+    const safeUser = user.toSafeObject();
+    req.session.user = safeUser;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully.',
+      data: {
+        user: safeUser
+      }
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// PUT /api/auth/change-password
+exports.changePassword = async (req, res, next) => {
+  try {
+    const userId = req.session.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Both current password and new password are required.'
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 6 characters.'
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.'
+      });
+    }
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect.'
+      });
+    }
+
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password changed successfully.'
+    });
+  } catch (error) {
+    return next(error);
+  }
 };

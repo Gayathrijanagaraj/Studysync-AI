@@ -40,6 +40,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: [500, 'Bio cannot exceed 500 characters'],
+      default: ''
+    },
     isActive: {
       type: Boolean,
       default: true
@@ -64,6 +70,7 @@ userSchema.methods.toSafeObject = function () {
     role: this.role,
     institution: this.institution,
     department: this.department,
+    bio: this.bio || '',
     profileImage: this.profileImage,
     isActive: this.isActive,
     createdAt: this.createdAt

@@ -14,6 +14,7 @@ const server = http.createServer(app);
 
 // Initialize Socket.IO Real-Time Engine
 const io = initSocketIO(server);
+app.set('io', io);
 
 // Connect to Database
 connectDB();
@@ -45,6 +46,8 @@ app.use('/api/auth', require('./backend/routes/authRoutes'));
 app.use('/api/rooms', require('./backend/routes/roomRoutes'));
 app.use('/api/dashboard', require('./backend/routes/dashboardRoutes'));
 app.use('/api/ai', require('./backend/routes/aiRoutes'));
+app.use('/api/knowledge', require('./backend/routes/knowledgeRoutes'));
+// Admin module removed as requested by user
 
 // Health Check
 app.get('/api/health', (req, res) => {
