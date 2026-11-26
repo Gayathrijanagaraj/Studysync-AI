@@ -1,0 +1,98 @@
+/* StudySync AI - Collaborative Whiteboard Styles */
+
+.whiteboard-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #FAF8F3;
+  overflow: hidden;
+}
+
+/* Floating Drawing Toolbar */
+.whiteboard-toolbar {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: var(--radius-pill);
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  z-index: 20;
+}
+
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-wb-tool {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--color-text-slate);
+  transition: all var(--transition-fast);
+}
+
+.btn-wb-tool:hover {
+  background-color: #F1F5F9;
+}
+
+.btn-wb-tool.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #E2E8F0;
+}
+
+/* Color Pickers */
+.color-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 0 1px #CBD5E1;
+  transition: transform var(--transition-fast);
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Whiteboard Canvas */
+.canvas-wrapper {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: crosshair;
+}
+
+#whiteboardCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}

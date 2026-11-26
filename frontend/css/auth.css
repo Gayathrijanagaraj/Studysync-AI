@@ -1,0 +1,445 @@
+/* StudySync AI - Two-Column Split Authentication Styles (Pixel-Matched to Design Reference) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.auth-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   LEFT PANEL (PURPLE HERO)
+   ============================================================ */
+.auth-hero-panel {
+  position: relative;
+  flex: 1;
+  background-color: var(--color-hero-purple);
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  color: #FFFFFF;
+}
+
+/* Abstract Geometric Shapes */
+.shape-yellow-circle {
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  background-color: var(--color-accent-yellow);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.shape-coral-circle {
+  position: absolute;
+  bottom: -90px;
+  left: -90px;
+  width: 300px;
+  height: 300px;
+  background-color: var(--color-accent-coral);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.shape-mint-squircle {
+  position: absolute;
+  right: 60px;
+  bottom: 220px;
+  width: 84px;
+  height: 84px;
+  background-color: var(--color-accent-mint);
+  border-radius: 22px;
+  transform: rotate(18deg);
+  pointer-events: none;
+  box-shadow: 0 10px 25px rgba(24, 210, 165, 0.35);
+}
+
+/* Brand Header */
+.brand-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon-pill {
+  width: 38px;
+  height: 38px;
+  background-color: var(--color-accent-yellow);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.brand-icon-pill span {
+  display: block;
+  width: 18px;
+  height: 3px;
+  background-color: #1A1D36;
+  border-radius: 2px;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+/* Hero Content & Headings */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+  margin: 40px 0;
+}
+
+.hero-heading {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 36px;
+}
+
+/* Chat Previews Container */
+.chat-previews {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 440px;
+}
+
+/* Student Chat Card (Gayathri) */
+.chat-bubble-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.avatar-student {
+  background-color: var(--color-accent-purple-light);
+  color: #4F46E5;
+}
+
+.bubble-student {
+  background-color: #FFFFFF;
+  color: var(--color-text-slate);
+  padding: 14px 18px;
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  box-shadow: var(--shadow-chat);
+  flex: 1;
+}
+
+.bubble-sender {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-navy);
+  margin-bottom: 4px;
+}
+
+.bubble-text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+/* AI Assistant Chat Card */
+.chat-bubble-card.ai-reply {
+  margin-left: 20px;
+}
+
+.avatar-ai {
+  background-color: var(--color-accent-mint);
+  color: #064E3B;
+}
+
+.bubble-ai {
+  background-color: var(--color-accent-mint-light);
+  color: #065F46;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  box-shadow: var(--shadow-chat);
+  flex: 1;
+}
+
+.bubble-ai .bubble-sender {
+  color: #065F46;
+}
+
+.bubble-ai .bubble-text {
+  color: #044E3B;
+  font-size: 14px;
+}
+
+/* Hero Footer Tagline */
+.hero-footer-tagline {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   RIGHT PANEL (WARM IVORY FORM)
+   ============================================================ */
+.auth-form-panel {
+  flex: 1;
+  background-color: var(--color-bg-ivory);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 440px;
+}
+
+.form-header {
+  margin-bottom: 28px;
+}
+
+.form-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-text-navy);
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* Google Button (Outlined Pill) */
+.btn-google {
+  width: 100%;
+  height: 50px;
+  background-color: #FFFFFF;
+  border: 1.5px solid var(--color-border-soft);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-google:hover {
+  background-color: #F8FAFC;
+  border-color: #C7D2FE;
+}
+
+/* Horizontal Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 22px 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1.5px solid #E0E7FF;
+}
+
+.auth-divider span {
+  padding: 0 14px;
+}
+
+/* Form Groups & Inputs */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-navy);
+  margin-bottom: 6px;
+}
+
+.forgot-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.form-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  background-color: var(--color-bg-input);
+  border: 1.5px solid var(--color-border-input);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--color-text-navy);
+  transition: all var(--transition-fast);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.form-helper {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+}
+
+/* Checkbox Row */
+.form-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 18px 0 24px;
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border: 1.5px solid var(--color-border-input);
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.checkbox-label {
+  font-size: 13px;
+  color: var(--color-text-slate);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+/* Primary Submit Button (Pill) */
+.btn-primary-pill {
+  width: 100%;
+  height: 52px;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-pill);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary-pill:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.38);
+  transform: translateY(-1px);
+}
+
+.btn-primary-pill:active {
+  transform: translateY(0);
+}
+
+.btn-primary-pill:disabled {
+  background-color: #A5B4FC;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Footer Link */
+.auth-footer-nav {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--color-text-slate);
+}
+
+.auth-footer-nav a {
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-left: 4px;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1023px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+  .auth-hero-panel {
+    padding: 36px 24px;
+    min-height: auto;
+  }
+  .hero-heading {
+    font-size: 34px;
+  }
+  .shape-yellow-circle {
+    width: 200px;
+    height: 200px;
+  }
+  .shape-coral-circle {
+    display: none;
+  }
+  .auth-form-panel {
+    padding: 36px 20px;
+  }
+}

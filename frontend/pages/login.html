@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in - StudySync AI</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <!-- LEFT PANEL: PURPLE HERO (Pixel-Matched to Login@1x.png with Gayathri Reference) -->
+    <div class="auth-hero-panel">
+      <!-- Decorative Shapes -->
+      <div class="shape-yellow-circle" aria-hidden="true"></div>
+      <div class="shape-coral-circle" aria-hidden="true"></div>
+      <div class="shape-mint-squircle" aria-hidden="true"></div>
+
+      <!-- Brand Header -->
+      <header class="brand-header">
+        <div class="brand-icon-pill" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="brand-name">Study Sync AI</span>
+      </header>
+
+      <!-- Main Display Content -->
+      <div class="hero-content">
+        <h1 class="hero-heading">Ready to learn<br>together?</h1>
+        <p class="hero-subtitle">
+          Study with friends on one shared page, and get a helping hand from AI right where you are stuck.
+        </p>
+
+        <!-- Conversational Preview Cards -->
+        <div class="chat-previews">
+          <!-- Student Chat Card (Gayathri) -->
+          <div class="chat-bubble-card">
+            <div class="avatar-circle avatar-student">GK</div>
+            <div class="bubble-student">
+              <div class="bubble-sender">Gayathri</div>
+              <div class="bubble-text">DFS always uses less memory, right?</div>
+            </div>
+          </div>
+
+          <!-- AI Assistant Chat Card -->
+          <div class="chat-bubble-card ai-reply">
+            <div class="avatar-circle avatar-ai">AI</div>
+            <div class="bubble-ai">
+              <div class="bubble-sender">AI assistant</div>
+              <div class="bubble-text">Not always. On a long path graph, DFS uses more memory than BFS.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Pinned Tagline -->
+      <div class="hero-footer-tagline">
+        Every answer you find is saved for the next student.
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: WARM IVORY FORM -->
+    <div class="auth-form-panel">
+      <div class="form-box">
+        <div class="form-header">
+          <h2 class="form-title">Welcome back!</h2>
+          <p class="form-subtitle">Log in and jump back into your study group.</p>
+        </div>
+
+        <!-- Google Continue Button (Pill) -->
+        <button type="button" id="googleSignInBtn" class="btn-google">
+          Continue with Google
+        </button>
+
+        <div class="auth-divider">
+          <span>or use email</span>
+        </div>
+
+        <!-- Feedback Alert Container -->
+        <div id="authAlert" class="alert hidden" role="alert"></div>
+
+        <!-- Login Form -->
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              class="form-input" 
+              placeholder="you@college.edu" 
+              required 
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="password" class="form-label">Password</label>
+              <a href="#" id="forgotPasswordLink" class="forgot-link">Forgot password?</a>
+            </div>
+            <input 
+              type="password" 
+              id="password" 
+              class="form-input" 
+              placeholder="Enter your password" 
+              required 
+              autocomplete="current-password"
+            >
+          </div>
+
+          <button type="submit" id="loginSubmitBtn" class="btn-primary-pill">
+            Log in
+          </button>
+        </form>
+
+        <div class="auth-footer-nav">
+          New here? <a href="register.html">Create an account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
+</html>

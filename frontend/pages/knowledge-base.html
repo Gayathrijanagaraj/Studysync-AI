@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base - StudySync AI</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/knowledge.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Global Navigation Bar -->
+    <nav class="app-navbar">
+      <a href="/pages/dashboard.html" class="nav-brand">
+        <div class="brand-icon-pill-nav" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="nav-brand-title">StudySync AI</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/pages/dashboard.html" class="nav-link-item">Dashboard</a>
+        <a href="/pages/rooms.html" class="nav-link-item">My Rooms</a>
+        <a href="/pages/knowledge-base.html" class="nav-link-item active">Knowledge Base</a>
+        <a href="/pages/sessions.html" class="nav-link-item">Sessions</a>
+        <a href="/pages/profile.html" class="nav-link-item">Profile</a>
+      </div>
+
+      <div class="nav-user-actions">
+        <div class="user-profile-badge">
+          <div class="user-avatar-circle" id="userAvatar">GK</div>
+          <span class="user-display-name" id="userNavName">Gayathri</span>
+        </div>
+        <button type="button" class="btn-nav-logout" id="logoutBtn">Log out</button>
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="knowledge-container">
+      <!-- Header Banner -->
+      <header class="knowledge-header">
+        <div class="knowledge-header-left">
+          <h1 class="knowledge-title">📚 Persistent Knowledge Base</h1>
+          <p class="knowledge-subtitle">
+            Your centralized revision vault: saved AI study recaps, resolved doubts, and collaborative notes.
+          </p>
+        </div>
+
+        <div class="knowledge-header-actions">
+          <button type="button" class="btn-kb-outline" id="btnExportMarkdown" title="Download all saved notes as Markdown">
+            📥 Export Study Sheet (.md)
+          </button>
+          <button type="button" class="btn-kb-primary" id="btnOpenCreateModal">
+            + New Note / Snippet
+          </button>
+        </div>
+      </header>
+
+      <!-- Filter & Search Toolbar -->
+      <section class="knowledge-toolbar">
+        <div class="kb-search-box">
+          <span class="kb-search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="kbSearchInput" 
+            class="kb-search-input" 
+            placeholder="Search concepts, tags, formulas, or summaries..." 
+            autocomplete="off"
+          >
+        </div>
+
+        <select id="kbSubjectSelect" class="kb-subject-select" title="Filter by Subject">
+          <option value="all">All Subjects</option>
+        </select>
+
+        <div class="kb-filter-pills">
+          <button type="button" class="kb-filter-pill active" data-category="all">All</button>
+          <button type="button" class="kb-filter-pill" data-category="summary">🎓 AI Recaps</button>
+          <button type="button" class="kb-filter-pill" data-category="doubt">❓ Solved Doubts</button>
+          <button type="button" class="kb-filter-pill" data-category="note">📝 Notes</button>
+          <button type="button" class="kb-filter-pill" data-category="flashcard">⚡ Flashcards</button>
+        </div>
+
+        <label class="kb-pin-toggle" title="Show only pinned revision items">
+          <input type="checkbox" id="kbPinnedToggle">
+          <span>📌 Pinned Only</span>
+        </label>
+      </section>
+
+      <!-- Knowledge Cards Grid -->
+      <section class="knowledge-grid" id="knowledgeGrid">
+        <!-- Dynamically rendered via knowledge.js -->
+        <div class="knowledge-empty-state" id="knowledgeEmptyState">
+          <div class="kb-empty-icon">💡</div>
+          <h3 class="kb-empty-title">Your knowledge base is ready!</h3>
+          <p class="kb-empty-desc">
+            Save AI study summaries from your sessions, bookmark resolved doubts, or create custom revision cards for exams.
+          </p>
+          <button type="button" class="btn-kb-primary" onclick="openCreateModal()">
+            + Create First Note
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- View / Reading Modal -->
+  <div class="kb-modal-overlay hidden" id="viewKnowledgeModal">
+    <div class="kb-modal-card">
+      <div class="kb-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="kb-badge kb-badge-summary" id="viewItemBadge">AI Summary</span>
+          <span class="kb-subject-chip" id="viewItemSubject">Computer Science</span>
+        </div>
+        <button type="button" class="kb-modal-close" onclick="closeViewModal()" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="kb-modal-body">
+        <h2 class="kb-modal-title" id="viewItemTitle" style="font-size:20px; line-height:1.35;">Item Title</h2>
+        <div class="kb-card-tags" id="viewItemTags"></div>
+        <div class="kb-view-reading-area" id="viewItemContent">Item Content</div>
+      </div>
+
+      <div class="kb-modal-footer">
+        <button type="button" class="btn-kb-outline" id="btnCopyViewContent">📋 Copy Content</button>
+        <button type="button" class="btn-kb-primary" onclick="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Knowledge Item Modal -->
+  <div class="kb-modal-overlay hidden" id="createKnowledgeModal">
+    <div class="kb-modal-card">
+      <div class="kb-modal-header">
+        <h2 class="kb-modal-title" id="modalFormTitle">✨ Save to Knowledge Base</h2>
+        <button type="button" class="kb-modal-close" onclick="closeCreateModal()" aria-label="Close modal">✕</button>
+      </div>
+
+      <form id="knowledgeItemForm">
+        <input type="hidden" id="editItemId" value="">
+
+        <div class="kb-modal-body">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label for="kbItemTitle" style="font-size:13px; font-weight:600; color:var(--color-text-navy);">Topic or Concept Title *</label>
+            <input type="text" id="kbItemTitle" class="kb-search-input" style="padding-left:12px;" placeholder="e.g. Dijkstra's Algorithm Invariant & Correctness" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <label for="kbItemSubject" style="font-size:13px; font-weight:600; color:var(--color-text-navy);">Subject *</label>
+              <input type="text" id="kbItemSubject" class="kb-search-input" style="padding-left:12px;" placeholder="e.g. Data Structures & Algorithms" required>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <label for="kbItemCategory" style="font-size:13px; font-weight:600; color:var(--color-text-navy);">Category</label>
+              <select id="kbItemCategory" class="kb-subject-select" style="width:100%;">
+                <option value="note">📝 Study Note</option>
+                <option value="summary">🎓 AI Study Summary</option>
+                <option value="doubt">❓ Solved Doubt</option>
+                <option value="flashcard">⚡ Quick Flashcard</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label for="kbItemContent" style="font-size:13px; font-weight:600; color:var(--color-text-navy);">Explanation, Notes, or Formula *</label>
+            <textarea id="kbItemContent" class="kb-search-input" style="padding:12px; min-height:140px; font-family:inherit; resize:vertical; line-height:1.5;" placeholder="Enter complete explanation, code snippet, or key takeaways..." required></textarea>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label for="kbItemTags" style="font-size:13px; font-weight:600; color:var(--color-text-navy);">Tags (comma-separated)</label>
+            <input type="text" id="kbItemTags" class="kb-search-input" style="padding-left:12px;" placeholder="graphs, greedy, algorithms">
+          </div>
+
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--color-text-navy); cursor:pointer;">
+            <input type="checkbox" id="kbItemPinned">
+            <span>📌 Pin to top of revision list</span>
+          </label>
+        </div>
+
+        <div class="kb-modal-footer">
+          <button type="button" class="btn-kb-outline" onclick="closeCreateModal()">Cancel</button>
+          <button type="submit" id="btnSaveKnowledgeItem" class="btn-kb-primary">Save to Knowledge Base</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Client Libraries -->
+  <script src="../js/api.js"></script>
+  <script src="../js/knowledge.js"></script>
+</body>
+</html>

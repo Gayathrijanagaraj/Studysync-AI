@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile & Settings - StudySync AI</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Global Navigation Bar -->
+    <nav class="app-navbar">
+      <a href="/pages/dashboard.html" class="nav-brand">
+        <div class="brand-icon-pill-nav" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="nav-brand-title">StudySync AI</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/pages/dashboard.html" class="nav-link-item">Dashboard</a>
+        <a href="/pages/rooms.html" class="nav-link-item">My Rooms</a>
+        <a href="/pages/knowledge-base.html" class="nav-link-item">Knowledge Base</a>
+        <a href="/pages/sessions.html" class="nav-link-item">Sessions</a>
+        <a href="/pages/profile.html" class="nav-link-item active">Profile</a>
+      </div>
+
+      <div class="nav-user-actions">
+        <div class="user-profile-badge">
+          <div class="user-avatar-circle" id="userAvatar">GK</div>
+          <span class="user-display-name" id="userNavName">Gayathri</span>
+        </div>
+        <button type="button" class="btn-nav-logout" id="logoutBtn">Log out</button>
+      </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="profile-container">
+      <!-- Profile Hero Card -->
+      <section class="profile-hero-card">
+        <div class="profile-user-left">
+          <div class="profile-avatar-large" id="profileAvatarLarge">GK</div>
+          <div class="profile-info-col">
+            <div class="profile-name-row">
+              <h1 class="profile-name-heading" id="profileHeadingName">Gayathri</h1>
+              <span class="profile-role-pill" id="profileRoleBadge">Student</span>
+            </div>
+            <span class="profile-email-text" id="profileEmail">gayathri@studysync.ai</span>
+            <span class="profile-institution-text" id="profileInstitutionDept">MCA Department • Computer Science</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Personal Learning Statistics Grid -->
+      <section class="profile-stats-grid">
+        <div class="profile-stat-box">
+          <div class="profile-stat-icon icon-purple">📚</div>
+          <div class="profile-stat-info">
+            <span class="profile-stat-number" id="statRooms">0</span>
+            <span class="profile-stat-label">Study Rooms</span>
+          </div>
+        </div>
+
+        <div class="profile-stat-box">
+          <div class="profile-stat-icon icon-mint">❓</div>
+          <div class="profile-stat-info">
+            <span class="profile-stat-number" id="statDoubts">0</span>
+            <span class="profile-stat-label">Doubts Raised & Solved</span>
+          </div>
+        </div>
+
+        <div class="profile-stat-box">
+          <div class="profile-stat-icon icon-amber">⏱️</div>
+          <div class="profile-stat-info">
+            <span class="profile-stat-number" id="statSessions">0</span>
+            <span class="profile-stat-label">Focus Sessions Completed</span>
+          </div>
+        </div>
+
+        <div class="profile-stat-box">
+          <div class="profile-stat-icon icon-blue">💡</div>
+          <div class="profile-stat-info">
+            <span class="profile-stat-number" id="statKnowledge">0</span>
+            <span class="profile-stat-label">Knowledge Items</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Forms Grid: Profile & Security -->
+      <section class="profile-forms-grid">
+        <!-- Edit Profile Details Card -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h2 class="settings-card-title">👤 Academic Profile</h2>
+            <p class="settings-card-desc">Update your name, department, institution, and study targets.</p>
+          </div>
+
+          <div id="profileAlert" class="status-alert-banner hidden"></div>
+
+          <form id="editProfileForm" class="settings-form">
+            <div class="form-field-group">
+              <label for="inputProfileName" class="form-label">Full Name *</label>
+              <input type="text" id="inputProfileName" class="form-input-text" placeholder="Your full name" required>
+            </div>
+
+            <div class="form-field-group">
+              <label for="inputProfileEmail" class="form-label">College Email (Read-Only)</label>
+              <input type="email" id="inputProfileEmail" class="form-input-text" disabled style="opacity: 0.7; cursor: not-allowed;">
+            </div>
+
+            <div class="form-field-group">
+              <label for="inputProfileInstitution" class="form-label">College or University</label>
+              <input type="text" id="inputProfileInstitution" class="form-input-text" placeholder="e.g. PSG College of Technology">
+            </div>
+
+            <div class="form-field-group">
+              <label for="inputProfileDepartment" class="form-label">Department / Major</label>
+              <input type="text" id="inputProfileDepartment" class="form-input-text" placeholder="e.g. MCA Computer Science">
+            </div>
+
+            <div class="form-field-group">
+              <label for="inputProfileBio" class="form-label">Study Bio & Exam Goals</label>
+              <textarea id="inputProfileBio" class="form-textarea" placeholder="e.g. Preparing for semester algorithms and operating systems exams with my peer crew."></textarea>
+            </div>
+
+            <button type="submit" id="btnSaveProfile" class="btn-settings-save">Save Profile Changes</button>
+          </form>
+        </div>
+
+        <!-- Security & Password Card -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h2 class="settings-card-title">🔒 Password & Security</h2>
+            <p class="settings-card-desc">Ensure your account is protected with a secure student password.</p>
+          </div>
+
+          <div id="passwordAlert" class="status-alert-banner hidden"></div>
+
+          <form id="changePasswordForm" class="settings-form">
+            <div class="form-field-group">
+              <label for="inputCurrentPassword" class="form-label">Current Password *</label>
+              <input type="password" id="inputCurrentPassword" class="form-input-text" placeholder="Enter current password" required>
+            </div>
+
+            <div class="form-field-group">
+              <label for="inputNewPassword" class="form-label">New Password *</label>
+              <input type="password" id="inputNewPassword" class="form-input-text" placeholder="At least 6 characters" minlength="6" required>
+              <span class="form-hint">Must contain at least 6 characters.</span>
+            </div>
+
+            <div class="form-field-group">
+              <label for="inputConfirmPassword" class="form-label">Confirm New Password *</label>
+              <input type="password" id="inputConfirmPassword" class="form-input-text" placeholder="Re-enter new password" minlength="6" required>
+            </div>
+
+            <button type="submit" id="btnChangePassword" class="btn-settings-save">Update Password</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Client Libraries -->
+  <script src="../js/api.js"></script>
+  <script src="../js/profile.js"></script>
+</body>
+</html>

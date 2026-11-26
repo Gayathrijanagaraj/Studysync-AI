@@ -1,0 +1,295 @@
+/* ==========================================================================
+   StudySync AI - Student Profile & Account Settings Styles
+   ========================================================================== */
+
+.profile-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Hero Profile Card */
+.profile-hero-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.profile-hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, #7C3AED 50%, var(--color-accent-mint) 100%);
+}
+
+.profile-user-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-avatar-large {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #3730A3 100%);
+  color: var(--color-white);
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+}
+
+.profile-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-name-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-navy);
+  letter-spacing: -0.3px;
+}
+
+.profile-role-pill {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: #EEF2FF;
+  color: var(--color-primary);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.profile-email-text {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.profile-institution-text {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Learning Stats Grid */
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.profile-stat-box {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-fast);
+}
+
+.profile-stat-box:hover {
+  transform: translateY(-1px);
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.profile-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.icon-purple { background-color: #EEF2FF; color: var(--color-primary); }
+.icon-mint   { background-color: #ECFDF5; color: #059669; }
+.icon-amber  { background-color: #FFFBEB; color: #D97706; }
+.icon-blue   { background-color: #EFF6FF; color: #2563EB; }
+
+.profile-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-stat-number {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text-navy);
+  line-height: 1.1;
+}
+
+.profile-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Settings Form Sections */
+.profile-forms-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 860px) {
+  .profile-forms-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.settings-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.settings-card-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 14px;
+}
+
+.settings-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-navy);
+}
+
+.settings-card-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-navy);
+}
+
+.form-input-text,
+.form-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 13px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: #F8FAFC;
+  color: var(--color-text-navy);
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.form-input-text:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.btn-settings-save {
+  align-self: flex-start;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #4338CA 100%);
+  color: var(--color-white);
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+  transition: all var(--transition-fast);
+  margin-top: 4px;
+}
+
+.btn-settings-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+.status-alert-banner {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-alert-banner.success {
+  background-color: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.status-alert-banner.error {
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.status-alert-banner.hidden {
+  display: none;
+}

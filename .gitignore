@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# System & OS
+.DS_Store
+Thumbs.db
+$RECYCLE.BIN/
+
+# Temporary files
+*.tmp
+prd_text.txt

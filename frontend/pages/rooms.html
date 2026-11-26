@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Study Rooms - StudySync AI</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <nav class="app-navbar">
+      <a href="/pages/dashboard.html" class="nav-brand">
+        <div class="brand-icon-pill-nav" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="nav-brand-title">StudySync AI</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/pages/dashboard.html" class="nav-link-item">Dashboard</a>
+        <a href="/pages/rooms.html" class="nav-link-item active">My Rooms</a>
+        <a href="/pages/knowledge-base.html" class="nav-link-item">Knowledge Base</a>
+        <a href="/pages/sessions.html" class="nav-link-item">Sessions</a>
+        <a href="/pages/profile.html" class="nav-link-item">Profile</a>
+      </div>
+
+      <div class="nav-user-actions">
+        <div class="user-profile-badge">
+          <div class="user-avatar-circle" id="userAvatar">GK</div>
+          <span class="user-display-name" id="userNavName">Gayathri</span>
+        </div>
+        <button type="button" class="btn-nav-logout" id="logoutBtn">Log out</button>
+      </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-content-container">
+      <div class="section-header-row" style="margin-bottom: 24px;">
+        <div>
+          <h1 class="section-title" style="font-size: 26px;">Study Rooms</h1>
+          <p style="font-size: 14px; color: var(--color-text-muted); margin-top: 4px;">
+            Join discussions, take collaborative notes, and consult AI in your study rooms.
+          </p>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <button type="button" class="btn-hero-action btn-hero-primary" id="btnOpenCreateModal">
+            + Create Room
+          </button>
+          <button type="button" class="btn-hero-action btn-hero-secondary" id="btnOpenJoinModal">
+            Join with Code
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs-bar">
+        <button type="button" class="tab-btn active" data-filter="all">All Rooms</button>
+        <button type="button" class="tab-btn" data-filter="created">Created by Me</button>
+        <button type="button" class="tab-btn" data-filter="joined">Joined by Me</button>
+      </div>
+
+      <!-- Rooms Grid -->
+      <div class="rooms-grid" id="allRoomsContainer">
+        <!-- Dynamically rendered via rooms.js -->
+      </div>
+    </main>
+  </div>
+
+  <!-- CREATE ROOM MODAL -->
+  <div id="createRoomModal" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Create a Study Room</h3>
+        <button type="button" class="btn-modal-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="createRoomForm">
+        <div class="form-group">
+          <label for="createRoomName" class="form-label">Room Name</label>
+          <input type="text" id="createRoomName" class="form-input" placeholder="e.g. Operating Systems Deep Dive" required>
+        </div>
+
+        <div class="form-group">
+          <label for="createRoomSubject" class="form-label">Subject</label>
+          <input type="text" id="createRoomSubject" class="form-input" placeholder="e.g. Operating Systems" required>
+        </div>
+
+        <div class="form-group">
+          <label for="createRoomDesc" class="form-label">Description (Optional)</label>
+          <input type="text" id="createRoomDesc" class="form-input" placeholder="e.g. Process scheduling and deadlock problems">
+        </div>
+
+        <div class="form-group">
+          <label for="createRoomVisibility" class="form-label">Visibility</label>
+          <select id="createRoomVisibility" class="form-input">
+            <option value="private" selected>Private (Invite code required)</option>
+            <option value="public">Public (Open to campus members)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="createRoomMax" class="form-label">Max Participants</label>
+          <input type="number" id="createRoomMax" class="form-input" value="20" min="2" max="50">
+        </div>
+
+        <button type="submit" id="btnSubmitCreate" class="btn-primary-pill" style="margin-top: 10px;">
+          Create Room
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JOIN ROOM MODAL -->
+  <div id="joinRoomModal" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Join Study Room</h3>
+        <button type="button" class="btn-modal-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="joinRoomForm">
+        <div class="form-group">
+          <label for="joinRoomCode" class="form-label">Room Code</label>
+          <input type="text" id="joinRoomCode" class="form-input" placeholder="e.g. SYNC-8F2K" required style="font-family: monospace; font-size: 16px; text-transform: uppercase;">
+          <p class="form-helper">Enter the 4-digit code provided by your study group leader.</p>
+        </div>
+
+        <button type="submit" id="btnSubmitJoin" class="btn-primary-pill" style="margin-top: 10px;">
+          Join Room
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/rooms.js"></script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+/* ==========================================================================
+   StudySync AI - In-Room Doubt Tracker & AI Solver Styles
+   ========================================================================== */
+
+.doubts-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #F8FAFC;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header & Filter Controls */
+.doubts-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.doubts-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doubts-filter-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.doubts-filter-btn:hover {
+  background-color: #F1F5F9;
+  color: var(--color-text-navy);
+}
+
+.doubts-filter-btn.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.doubts-search-box {
+  flex: 1;
+  max-width: 280px;
+  position: relative;
+}
+
+.doubts-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  font-size: 13px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: #F8FAFC;
+  color: var(--color-text-navy);
+  transition: all var(--transition-fast);
+}
+
+.doubts-search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.doubts-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.btn-raise-doubt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #4338CA 100%);
+  color: var(--color-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.btn-raise-doubt:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+/* Scrollable Doubts Stream */
+.doubts-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Empty State */
+.doubts-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.doubts-empty-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.doubts-empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-navy);
+  margin-bottom: 6px;
+}
+
+.doubts-empty-desc {
+  font-size: 13px;
+  max-width: 380px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* Doubt Card */
+.doubt-card {
+  display: flex;
+  gap: 16px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all var(--transition-fast);
+}
+
+.doubt-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.doubt-card.status-resolved {
+  border-left: 4px solid var(--color-accent-mint);
+  background-color: #FAFCFB;
+}
+
+/* Upvote Column */
+.doubt-upvote-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.btn-upvote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 8px 6px;
+  border: 1px solid var(--color-border);
+  background-color: #F8FAFC;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-navy);
+}
+
+.btn-upvote:hover {
+  background-color: #EEF2FF;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-upvote.upvoted {
+  background-color: #EEF2FF;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.upvote-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.upvote-count {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* Doubt Main Content */
+.doubt-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.doubt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.doubt-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.doubt-author-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  color: var(--color-text-navy);
+}
+
+.doubt-author-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doubt-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.doubt-status-pill.open {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.doubt-status-pill.resolved {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.doubt-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-navy);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.doubt-desc {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin-bottom: 10px;
+}
+
+.doubt-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.doubt-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: #4338CA;
+  background-color: #EEF2FF;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* AI Solution Section */
+.doubt-ai-box {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 100%);
+  border: 1px solid #C7D2FE;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.doubt-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.doubt-ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4338CA;
+}
+
+.doubt-ai-model-tag {
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #C7D2FE;
+  color: #312E81;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.doubt-ai-content {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #1E1B4B;
+  white-space: pre-wrap;
+}
+
+/* Peer Answers Section */
+.doubt-answers-section {
+  margin-top: 14px;
+  border-top: 1px solid #F1F5F9;
+  padding-top: 12px;
+}
+
+.doubt-answers-toggle {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.doubt-answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.doubt-answer-item {
+  background-color: #F8FAFC;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+
+.doubt-answer-author {
+  font-weight: 700;
+  color: var(--color-text-navy);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.doubt-answer-time {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.doubt-answer-text {
+  color: #334155;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.doubt-answer-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.doubt-answer-input {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-white);
+}
+
+.doubt-answer-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.btn-answer-send {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Card Actions Footer */
+.doubt-actions-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--color-border);
+  flex-wrap: wrap;
+}
+
+.btn-doubt-action {
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-text-navy);
+  transition: all var(--transition-fast);
+}
+
+.btn-doubt-action:hover {
+  background-color: #F8FAFC;
+}
+
+.btn-doubt-ai {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  color: var(--color-white);
+  border: none;
+}
+
+.btn-doubt-ai:hover {
+  opacity: 0.92;
+  color: var(--color-white);
+}
+
+.btn-doubt-ai.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.btn-doubt-resolve {
+  color: #065F46;
+  border-color: #A7F3D0;
+  background-color: #ECFDF5;
+}
+
+.btn-doubt-resolve:hover {
+  background-color: #D1FAE5;
+}
+
+.btn-doubt-delete {
+  color: #EF4444;
+  border-color: #FECACA;
+  background-color: #FEF2F2;
+  margin-left: auto;
+}
+
+.btn-doubt-delete:hover {
+  background-color: #FEE2E2;
+}
+
+/* Tab Badge */
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9px;
+  background-color: #EF4444;
+  color: var(--color-white);
+  margin-left: 4px;
+}
+
+.tab-badge.badge-zero {
+  background-color: #94A3B8;
+}
+
+/* Modal for Raising a Doubt */
+.doubt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.doubt-modal-overlay.hidden {
+  display: none;
+}
+
+.doubt-modal-card {
+  background-color: var(--color-white);
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 540px;
+  overflow: hidden;
+  animation: modalPop 0.2s ease-out;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.doubt-modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.doubt-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-navy);
+}
+
+.doubt-modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.doubt-modal-close:hover {
+  background-color: #F1F5F9;
+  color: var(--color-text-navy);
+}
+
+.doubt-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.doubt-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.doubt-form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-navy);
+}
+
+.doubt-form-input,
+.doubt-form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--color-text-navy);
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.doubt-form-input:focus,
+.doubt-form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.doubt-form-textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.doubt-form-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.doubt-modal-footer {
+  padding: 16px 24px;
+  background-color: #F8FAFC;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-modal-cancel {
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.btn-modal-cancel:hover {
+  background-color: #F1F5F9;
+  color: var(--color-text-navy);
+}
+
+.btn-modal-submit {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #4338CA 100%);
+  color: var(--color-white);
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-modal-submit:hover {
+  opacity: 0.92;
+}
