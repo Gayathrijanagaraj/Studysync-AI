@@ -981,7 +981,7 @@
       }
       if (topbarShortcut) {
         topbarShortcut.classList.add('in-call');
-        topbarShortcut.textContent = '📞 In Call (Leave)';
+        topbarShortcut.textContent = '🟢 In Call';
       }
       if (btnMic) btnMic.disabled = false;
       if (btnCam) btnCam.disabled = false;
@@ -1010,12 +1010,20 @@
   function setCallStatus(status, text) {
     const dot = document.getElementById('callStatusDot');
     const statusText = document.getElementById('callStatusText');
+    const badge = document.getElementById('callStatusBadge');
 
     if (dot) {
       dot.className = `call-status-dot ${status}`;
     }
     if (statusText) {
       statusText.textContent = text;
+    }
+    if (badge) {
+      if (status === 'connected') {
+        badge.classList.add('connected');
+      } else {
+        badge.classList.remove('connected');
+      }
     }
   }
 
