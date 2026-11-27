@@ -12,6 +12,9 @@ const initSocketIO = require('./backend/sockets/socketHandler');
 const app = express();
 const server = http.createServer(app);
 
+// Trust first proxy for secure HTTPS cookies on cloud hosts (Render, Railway, Heroku)
+app.set('trust proxy', 1);
+
 // Initialize Socket.IO Real-Time Engine
 const io = initSocketIO(server);
 app.set('io', io);
@@ -21,7 +24,7 @@ connectDB();
 
 // Core Middleware
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:5000',
+  origin: process.env.CLIENT_ORIGIN || true,
   credentials: true
 }));
 app.use(express.json());

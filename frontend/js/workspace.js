@@ -177,6 +177,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof initAI === 'function') {
     initAI(roomId);
   }
+  if (typeof initWebRTC === 'function') {
+    initWebRTC(socket, roomId, currentUser, isOwner);
+  }
 
   // 8. Check if Room is Closed (Read-Only Mode)
   if (currentRoom.status === 'closed') {
@@ -281,6 +284,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (modeSelect) modeSelect.disabled = true;
     const timerDisplay = document.getElementById('sessionTimerDisplay');
     if (timerDisplay) timerDisplay.textContent = 'Room Closed';
+
+    // 6. Lock WebRTC Live Call
+    if (typeof window.webrtcLeaveCall === 'function') {
+      window.webrtcLeaveCall();
+    }
+    const btnCall = document.getElementById('btnToggleCall');
+    const btnPrejoin = document.getElementById('btnPrejoinStart');
+    const btnShortcut = document.getElementById('btnTopbarCallShortcut');
+    if (btnCall) {
+      btnCall.disabled = true;
+      btnCall.textContent = '🔒 Call Closed';
+    }
+    if (btnPrejoin) {
+      btnPrejoin.disabled = true;
+      btnPrejoin.textContent = '🔒 Study Room Closed';
+    }
+    if (btnShortcut) btnShortcut.style.display = 'none';
   }
   window.enableReadOnlyMode = enableReadOnlyMode;
 
@@ -313,23 +333,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function setupTabSwitching() {
-    // Center Stage Switcher (Shared Notes vs Whiteboard vs Doubt Tracker)
+    // Center Stage Switcher (Shared Notes vs Whiteboard vs Doubt Tracker vs Live Call & Screen)
     const btnTabNotes = document.getElementById('tabBtnNotes');
     const btnTabWhiteboard = document.getElementById('tabBtnWhiteboard');
     const btnTabDoubts = document.getElementById('tabBtnDoubts');
+    const btnTabMedia = document.getElementById('tabBtnMedia');
     const viewNotes = document.getElementById('notesView');
     const viewWhiteboard = document.getElementById('whiteboardView');
     const viewDoubts = document.getElementById('doubtsView');
+    const viewMedia = document.getElementById('mediaView');
     const notesSaveStatus = document.getElementById('notesSaveStatus');
+    const btnCallShortcut = document.getElementById('btnTopbarCallShortcut');
 
     btnTabNotes?.addEventListener('click', () => {
       btnTabNotes.classList.add('active');
       btnTabWhiteboard?.classList.remove('active');
       btnTabDoubts?.classList.remove('active');
+      btnTabMedia?.classList.remove('active');
 
       viewNotes?.classList.remove('hidden');
       viewWhiteboard?.classList.add('hidden');
       viewDoubts?.classList.add('hidden');
+      viewMedia?.classList.add('hidden');
 
       if (notesSaveStatus) notesSaveStatus.style.display = 'block';
     });
@@ -338,10 +363,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       btnTabWhiteboard.classList.add('active');
       btnTabNotes?.classList.remove('active');
       btnTabDoubts?.classList.remove('active');
+      btnTabMedia?.classList.remove('active');
 
       viewWhiteboard?.classList.remove('hidden');
       viewNotes?.classList.add('hidden');
       viewDoubts?.classList.add('hidden');
+      viewMedia?.classList.add('hidden');
 
       if (notesSaveStatus) notesSaveStatus.style.display = 'none';
       // Trigger canvas resize when made visible
@@ -352,12 +379,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       btnTabDoubts.classList.add('active');
       btnTabNotes?.classList.remove('active');
       btnTabWhiteboard?.classList.remove('active');
+      btnTabMedia?.classList.remove('active');
 
       viewDoubts?.classList.remove('hidden');
       viewNotes?.classList.add('hidden');
       viewWhiteboard?.classList.add('hidden');
+      viewMedia?.classList.add('hidden');
 
       if (notesSaveStatus) notesSaveStatus.style.display = 'none';
+    });
+
+    btnTabMedia?.addEventListener('click', () => {
+      btnTabMedia.classList.add('active');
+      btnTabNotes?.classList.remove('active');
+      btnTabWhiteboard?.classList.remove('active');
+      btnTabDoubts?.classList.remove('active');
+
+      viewMedia?.classList.remove('hidden');
+      viewNotes?.classList.add('hidden');
+      viewWhiteboard?.classList.add('hidden');
+      viewDoubts?.classList.add('hidden');
+
+      if (notesSaveStatus) notesSaveStatus.style.display = 'none';
+    });
+
+    btnCallShortcut?.addEventListener('click', () => {
+      btnTabMedia?.click();
+      if (typeof window.webrtcJoinCall === 'function' && !window.webrtcIsInCall?.()) {
+        window.webrtcJoinCall();
+      }
     });
 
     // Right Drawer Switcher (Group Chat vs AI Assistant)

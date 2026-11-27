@@ -62,6 +62,9 @@
       </div>
 
       <div class="topbar-right">
+        <button type="button" class="btn-topbar-call" id="btnTopbarCallShortcut" title="Open Live Audio, Video & Screen Share Call">
+          📹 Live Call
+        </button>
         <div class="participant-count-pill" id="onlineCountBadge">
           👥 1 online
         </div>
@@ -127,6 +130,9 @@
             </button>
             <button type="button" class="stage-tab-btn" id="tabBtnDoubts">
               ❓ Doubt Tracker <span class="tab-badge badge-zero" id="doubtsBadge">0</span>
+            </button>
+            <button type="button" class="stage-tab-btn" id="tabBtnMedia">
+              📹 Live Call & Screen <span class="tab-badge badge-zero" id="callBadge">Off</span>
             </button>
           </div>
           <div class="notes-save-status" id="notesSaveStatus">
@@ -201,6 +207,83 @@
             </div>
             <div class="doubts-scroll-area" id="doubtsScrollArea">
               <!-- Dynamically populated via doubts.js -->
+            </div>
+          </div>
+
+          <!-- Live Audio, Video Calling & Screen Sharing View -->
+          <div class="media-stage-container hidden" id="mediaView">
+            <!-- Media Call Controls Bar -->
+            <div class="media-controls-bar">
+              <div class="media-controls-left">
+                <button type="button" class="btn-call-control btn-call-primary" id="btnToggleCall">
+                  <span class="ctrl-icon">📞</span> <span class="ctrl-label" id="lblToggleCall">Join Call</span>
+                </button>
+                <button type="button" class="btn-call-control btn-call-secondary" id="btnToggleMic" disabled title="Mute/Unmute Microphone (Ctrl+M)">
+                  <span class="ctrl-icon" id="iconMic">🎤</span> <span class="ctrl-label" id="lblMic">Mute</span>
+                </button>
+                <button type="button" class="btn-call-control btn-call-secondary" id="btnToggleCam" disabled title="Start/Stop Camera Video (Ctrl+E)">
+                  <span class="ctrl-icon" id="iconCam">📹</span> <span class="ctrl-label" id="lblCam">Stop Video</span>
+                </button>
+                <button type="button" class="btn-call-control btn-call-secondary" id="btnToggleScreen" disabled title="Share Your Screen (Ctrl+S)">
+                  <span class="ctrl-icon" id="iconScreen">🖥️</span> <span class="ctrl-label" id="lblScreen">Share Screen</span>
+                </button>
+              </div>
+
+              <div class="media-controls-right">
+                <div class="call-status-pill" id="callStatusBadge">
+                  <span class="call-status-dot offline" id="callStatusDot"></span>
+                  <span id="callStatusText">Call Disconnected</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pre-join Invitation Empty State (Shown before participant connects) -->
+            <div class="call-prejoin-banner" id="callPrejoinBanner">
+              <div class="prejoin-icon-ring">📹</div>
+              <h3 class="prejoin-title">Live Study Call & Screen Sharing</h3>
+              <p class="prejoin-desc">Join voice and video to collaborate face-to-face with your peer crew, or share your screen to present code, lecture slides, and notes.</p>
+              <button type="button" class="btn-prejoin-start" id="btnPrejoinStart">
+                📞 Connect to Call
+              </button>
+            </div>
+
+            <!-- Active Screen Sharing Spotlight (Shown when someone is actively sharing their screen) -->
+            <div class="screen-share-spotlight hidden" id="screenShareSpotlight">
+              <div class="screen-share-header">
+                <div class="screen-share-title">
+                  <span class="screen-icon">🖥️</span>
+                  <span><strong id="screenSharerName">Student</strong> is sharing screen</span>
+                </div>
+                <button type="button" class="btn-fullscreen-toggle" id="btnFullscreenScreen" title="Toggle Fullscreen">
+                  ⛶ Fullscreen
+                </button>
+              </div>
+              <div class="screen-video-wrapper">
+                <video id="screenShareVideo" autoplay playsinline></video>
+              </div>
+            </div>
+
+            <!-- Video Grid Gallery -->
+            <div class="video-grid-gallery hidden" id="videoGridGallery">
+              <!-- Local User Tile -->
+              <div class="video-tile local-tile" id="tileLocal">
+                <div class="video-feed-wrap">
+                  <video id="localVideoFeed" autoplay playsinline muted></video>
+                  <div class="cam-off-avatar hidden" id="localAvatarPlaceholder">
+                    <div class="avatar-circle-lg" id="localAvatarInitials">YOU</div>
+                    <span class="avatar-status-label">Camera is off</span>
+                  </div>
+                </div>
+                <div class="video-tile-footer">
+                  <span class="tile-user-name" id="localTileName">You</span>
+                  <div class="tile-status-badges">
+                    <span class="badge-mic active" id="localMicBadge" title="Microphone Active">🎤</span>
+                    <span class="badge-screen hidden" id="localScreenBadge" title="Sharing Screen">🖥️</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Remote Peer Tiles (dynamically injected via webrtc.js) -->
             </div>
           </div>
         </div>
@@ -381,6 +464,7 @@
   <script src="../js/ai-assistant.js"></script>
   <script src="../js/doubts.js"></script>
   <script src="../js/session.js"></script>
+  <script src="../js/webrtc.js"></script>
   <script src="../js/workspace.js"></script>
 </body>
 </html>
