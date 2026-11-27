@@ -30,7 +30,7 @@ const knowledgeItemSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['summary', 'doubt', 'note', 'flashcard'],
+      enum: ['summary', 'doubt', 'note', 'flashcard', 'ai_recap'],
       default: 'note',
       index: true
     },

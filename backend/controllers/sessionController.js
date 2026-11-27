@@ -315,7 +315,7 @@ exports.endSession = async (req, res, next) => {
         title: `Study Session Recap: ${room ? room.name : 'Study Session'}`,
         content: summaryText,
         subject: room ? room.subject : 'General Studies',
-        category: 'ai_recap',
+        category: 'summary',
         tags: ['session-recap', 'summary', room ? room.subject.toLowerCase() : 'studies']
       });
     } catch (kErr) {
