@@ -53,7 +53,7 @@ exports.getItems = async (req, res, next) => {
 exports.createItem = async (req, res, next) => {
   try {
     const userId = req.session.user.id;
-    const { title, content, category = 'note', subject = 'General Studies', tags, source, roomId, isPinned = false } = req.body;
+    const { title, content, category = 'note', subject = 'General Studies', tags, source, roomId, sourceDoubtId, isPinned = false } = req.body;
 
     if (!title || title.trim() === '') {
       return res.status(400).json({
@@ -79,6 +79,7 @@ exports.createItem = async (req, res, next) => {
     const item = await KnowledgeItem.create({
       userId,
       roomId: roomId || undefined,
+      sourceDoubtId: sourceDoubtId || undefined,
       title: title.trim(),
       content: content.trim(),
       category: ['summary', 'doubt', 'note', 'flashcard'].includes(category) ? category : 'note',

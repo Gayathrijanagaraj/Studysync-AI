@@ -12,6 +12,10 @@ const knowledgeItemSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Room'
     },
+    sourceDoubtId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doubt'
+    },
     title: {
       type: String,
       required: [true, 'Title is required.'],

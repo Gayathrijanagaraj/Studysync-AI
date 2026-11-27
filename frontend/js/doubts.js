@@ -430,7 +430,9 @@ async function handleDoubtCardClick(e) {
         category: 'doubt',
         content: fullContent,
         tags: doubt.tags || ['doubt', 'solved'],
-        source: 'In-Room Doubt Resolution'
+        source: 'In-Room Doubt Resolution',
+        sourceDoubtId: doubt._id,
+        roomId: doubtsState.roomId
       });
 
       target.textContent = '✓ Saved to KB!';
