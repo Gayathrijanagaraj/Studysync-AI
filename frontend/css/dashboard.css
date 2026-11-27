@@ -30,23 +30,34 @@
 }
 
 .brand-icon-pill-nav {
-  width: 34px;
-  height: 34px;
-  background-color: var(--color-accent-yellow);
-  border-radius: 9px;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  border-radius: 10px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3px;
+  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.28);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
 }
 
-.brand-icon-pill-nav span {
-  display: block;
-  width: 15px;
-  height: 2.5px;
-  background-color: #1A1D36;
-  border-radius: 2px;
+.nav-brand:hover .brand-icon-pill-nav {
+  transform: scale(1.05);
+}
+
+.brand-badge-ai {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4F46E5;
+  background-color: #EEF2FF;
+  border: 1px solid #C7D2FE;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  margin-left: 5px;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  display: inline-block;
 }
 
 .nav-brand-title {
