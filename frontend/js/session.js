@@ -171,12 +171,17 @@ async function handleSessionEnd() {
     return;
   }
 
-  if (!confirm('End current study session and generate an automated AI recap?')) return;
+  if (!confirm('End study session and close room? This will generate your AI study recap, save it to your Knowledge Base, and archive the room in read-only mode.')) return;
 
   const btnEnd = document.getElementById('btnEndSession');
+  const topbarEnd = document.getElementById('btnTopbarEndSession');
   if (btnEnd) {
     btnEnd.disabled = true;
     btnEnd.textContent = '⏳ AI Recap...';
+  }
+  if (topbarEnd) {
+    topbarEnd.disabled = true;
+    topbarEnd.textContent = '⏳ Ending...';
   }
 
   try {
@@ -191,13 +196,17 @@ async function handleSessionEnd() {
     }
   } catch (err) {
     alert(err.message || 'Failed to end study session.');
-  } finally {
     if (btnEnd) {
-      btnEnd.disabled = sessionState.status === 'idle';
+      btnEnd.disabled = false;
       btnEnd.textContent = '🏁 Recap';
+    }
+    if (topbarEnd) {
+      topbarEnd.disabled = false;
+      topbarEnd.textContent = '🏁 End Session';
     }
   }
 }
+window.handleSessionEnd = handleSessionEnd;
 
 /**
  * 6. Timer Engine & HUD Controls

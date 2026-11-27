@@ -208,39 +208,65 @@ exports.resumeSession = async (req, res, next) => {
 exports.endSession = async (req, res, next) => {
   try {
     const { roomId } = req.params;
+    const room = req.room;
 
-    const session = await StudySession.findOne({
+    // Verify host authority: only the owner who created the room can end the session
+    const userId = req.session.user.id.toString();
+    const isHost = req.isOwner || (room && room.ownerId && (room.ownerId._id || room.ownerId).toString() === userId);
+    if (!isHost) {
+      return res.status(403).json({
+        success: false,
+        message: 'Permission denied: Only the room host who created this study room can end the session.'
+      });
+    }
+
+    // Find any active or paused session
+    let session = await StudySession.findOne({
       roomId,
       status: { $in: ['active', 'paused'] }
     });
 
+    // If no active session is running, check if already completed or create a session for this wrap-up
     if (!session) {
-      return res.status(404).json({
-        success: false,
-        message: 'No active or paused session to end.'
+      const existingSession = await StudySession.findOne({ roomId }).sort({ createdAt: -1 });
+      if (existingSession && existingSession.status === 'completed' && existingSession.aiSummary && existingSession.aiSummary.content) {
+        // Room was already ended; ensure room status is closed
+        const Room = require('../models/Room');
+        const roomDoc = await Room.findById(roomId);
+        if (roomDoc && roomDoc.status !== 'closed') {
+          roomDoc.status = 'closed';
+          await roomDoc.save();
+        }
+        return res.status(200).json({
+          success: true,
+          message: 'Study session is already completed.',
+          data: { session: existingSession, roomStatus: 'closed' }
+        });
+      }
+
+      // Create a fresh completed session record so wrap-up recap and room close ALWAYS work smoothly
+      session = await StudySession.create({
+        roomId,
+        startedBy: req.session.user.id,
+        endedBy: req.session.user.id,
+        mode: 'stopwatch',
+        durationSeconds: 60,
+        status: 'completed',
+        startTime: new Date(Date.now() - 60000),
+        endTime: new Date()
       });
+    } else {
+      // Calculate final duration
+      if (session.status === 'active' && session.startTime) {
+        const delta = Math.floor((Date.now() - new Date(session.startTime).getTime()) / 1000);
+        session.durationSeconds = (session.durationSeconds || 0) + Math.max(0, delta);
+      }
+      session.status = 'completed';
+      session.endTime = new Date();
+      session.endedBy = req.session.user.id;
     }
-
-    const isHost = req.isOwner || (session.startedBy && session.startedBy.toString() === req.session.user.id.toString());
-    if (!isHost) {
-      return res.status(403).json({
-        success: false,
-        message: 'Permission denied: Only the room host who created the session/room can end the study session.'
-      });
-    }
-
-    // Calculate final duration
-    if (session.status === 'active' && session.startTime) {
-      const delta = Math.floor((Date.now() - new Date(session.startTime).getTime()) / 1000);
-      session.durationSeconds = (session.durationSeconds || 0) + Math.max(0, delta);
-    }
-
-    session.status = 'completed';
-    session.endTime = new Date();
-    session.endedBy = req.session.user.id;
 
     // Aggregate room metrics for AI synthesis
-    const room = req.room;
     const msgCount = await Message.countDocuments({ roomId });
     const doubtsCount = await Doubt.countDocuments({ roomId, status: 'resolved' });
     const sharedNote = await SharedNote.findOne({ roomId });
@@ -280,6 +306,21 @@ exports.endSession = async (req, res, next) => {
     await session.save();
     await session.populate('startedBy', 'name');
     await session.populate('endedBy', 'name');
+
+    // Automatically persist recap to the Persistent Knowledge Base for revision
+    try {
+      const KnowledgeItem = require('../models/KnowledgeItem');
+      await KnowledgeItem.create({
+        userId: req.session.user.id,
+        title: `Study Session Recap: ${room ? room.name : 'Study Session'}`,
+        content: summaryText,
+        subject: room ? room.subject : 'General Studies',
+        category: 'ai_recap',
+        tags: ['session-recap', 'summary', room ? room.subject.toLowerCase() : 'studies']
+      });
+    } catch (kErr) {
+      console.warn('[Session] Could not auto-save recap to KnowledgeItem:', kErr.message);
+    }
 
     // Automatically block & close the study room so all collaborative tools lock into Read-Only mode
     const Room = require('../models/Room');

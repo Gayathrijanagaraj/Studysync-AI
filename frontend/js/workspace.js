@@ -120,24 +120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       topbarReopenBtn?.classList.add('hidden');
     }
 
-    topbarEndBtn?.addEventListener('click', async () => {
-      if (!confirm('End current study session and close room? This will lock the workspace in read-only mode and generate an automated AI recap.')) {
-        return;
-      }
-      topbarEndBtn.disabled = true;
-      topbarEndBtn.textContent = '⏳ Ending...';
-      try {
-        const res = await API.endSession(roomId);
-        if (typeof stopLocalTimerInterval === 'function') stopLocalTimerInterval();
-        if (typeof resetSessionHUD === 'function') resetSessionHUD();
-        if (res && res.success && res.data && res.data.session && typeof openSessionRecapModal === 'function') {
-          openSessionRecapModal(res.data.session);
-        }
-        enableReadOnlyMode(true);
-      } catch (err) {
-        alert(err.message || 'Failed to end study session.');
-        topbarEndBtn.disabled = false;
-        topbarEndBtn.textContent = '🏁 End Session';
+    topbarEndBtn?.addEventListener('click', () => {
+      if (typeof window.handleSessionEnd === 'function') {
+        window.handleSessionEnd();
       }
     });
 
@@ -285,7 +270,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const timerDisplay = document.getElementById('sessionTimerDisplay');
     if (timerDisplay) timerDisplay.textContent = 'Room Closed';
 
-    // 6. Lock WebRTC Live Call
+    // 6. Update Topbar Action Buttons
+    const topbarEnd = document.getElementById('btnTopbarEndSession');
+    const topbarReopen = document.getElementById('btnTopbarReopen');
+    if (topbarEnd) topbarEnd.classList.add('hidden');
+    if (topbarReopen && isOwner) topbarReopen.classList.remove('hidden');
+
+    // 7. Lock WebRTC Live Call
     if (typeof window.webrtcLeaveCall === 'function') {
       window.webrtcLeaveCall();
     }
