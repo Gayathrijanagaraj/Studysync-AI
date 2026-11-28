@@ -293,3 +293,25 @@
 .status-alert-banner.hidden {
   display: none;
 }
+
+@media (max-width: 640px) {
+  .profile-container {
+    padding: 16px 12px;
+  }
+  .profile-hero-card {
+    padding: 20px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-user-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .profile-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .settings-card {
+    padding: 18px 16px;
+  }
+}

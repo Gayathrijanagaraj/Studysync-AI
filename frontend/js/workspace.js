@@ -211,8 +211,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (reopenBtn) reopenBtn.classList.add('hidden');
     }
 
-    // 1. Lock Notes (Disable textarea/contenteditable and tools)
-    const notesEditor = document.getElementById('notesEditor');
+    // 1. Lock Notes (Disable textarea and tools)
+    const notesEditor = document.getElementById('sharedNotesTextarea') || document.getElementById('notesEditor');
     if (notesEditor) {
       notesEditor.disabled = true;
       notesEditor.readOnly = true;

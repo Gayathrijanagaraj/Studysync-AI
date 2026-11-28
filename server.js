@@ -50,7 +50,7 @@ app.use('/api/rooms', require('./backend/routes/roomRoutes'));
 app.use('/api/dashboard', require('./backend/routes/dashboardRoutes'));
 app.use('/api/ai', require('./backend/routes/aiRoutes'));
 app.use('/api/knowledge', require('./backend/routes/knowledgeRoutes'));
-// Admin module removed as requested by user
+app.use('/api/admin', require('./backend/routes/adminRoutes'));
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -73,13 +73,15 @@ app.use('/api/*', (req, res) => {
 app.use(errorHandler);
 
 // Start Server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`===============================================`);
-  console.log(` StudySync AI Server running on port ${PORT}`);
-  console.log(` Access URL: http://localhost:${PORT}`);
-  console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`===============================================`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () => {
+    console.log(`===============================================`);
+    console.log(` StudySync AI Server running on port ${PORT}`);
+    console.log(` Access URL: http://localhost:${PORT}`);
+    console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`===============================================`);
+  });
+}
 
 module.exports = { app, server };

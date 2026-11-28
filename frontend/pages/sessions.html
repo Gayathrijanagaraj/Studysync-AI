@@ -11,11 +11,20 @@
   <style>
     .sessions-page-container {
       max-width: 1240px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
       margin: 0 auto;
       padding: 32px 24px;
       display: flex;
       flex-direction: column;
       gap: 24px;
+    }
+
+    .sessions-page-container > * {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .sessions-header {
@@ -273,6 +282,43 @@
       margin: 12px 0;
       border-radius: 0 8px 8px 0;
       font-style: italic;
+    }
+
+    @media (max-width: 640px) {
+      .sessions-page-container {
+        padding: 16px 12px;
+      }
+      .sessions-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .sessions-title {
+        font-size: 20px;
+        word-break: break-word;
+      }
+      .sessions-stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-tabs-bar {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 8px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+      }
+      .filter-tabs-bar .tab-btn {
+        flex-shrink: 0;
+      }
+      .sessions-grid {
+        grid-template-columns: 1fr;
+      }
+      .session-history-card {
+        padding: 16px;
+      }
     }
   </style>
 </head>
